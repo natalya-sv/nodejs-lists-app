@@ -1,18 +1,19 @@
 import express from "express";
-export const router = express.Router();
-
 import { body } from "express-validator";
 import { User } from "../models/user";
 import { createUser, login } from "../controllers/user";
+import { EMAIL_EXISTS, ENTER_VALID_EMAIL } from "../../constants";
+
+export const router = express.Router();
 
 router.post("/signup", [
   body("email")
     .isEmail()
-    .withMessage("Please enter valid email")
+    .withMessage(ENTER_VALID_EMAIL)
     .custom((email: string, { req: Request }) => {
       return User.findOne({ email: email }).then((userDoc) => {
         if (userDoc) {
-          return Promise.reject("Email already exists");
+          return Promise.reject(EMAIL_EXISTS);
         }
       });
     })
