@@ -3,13 +3,16 @@ import bodyParser from "body-parser";
 import { connect } from "mongoose";
 import dotenv from "dotenv";
 import { router as categoriesRouter } from "./routes/category";
+import { router as userRouter } from "./routes/user";
 dotenv.config();
 const databaseUrl = process.env.MONGODB_URI as string;
 const app: Express = express();
+
 app.use(bodyParser.json());
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(categoriesRouter);
+app.use(userRouter);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
