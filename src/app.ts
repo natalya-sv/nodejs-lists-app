@@ -35,7 +35,7 @@ app.use((error: Error, req: Request, res: Response, next: any) => {
 
 connect(databaseUrl)
   .then((res) => {
-    app.listen(8080);
+    app.listen(3000, () => console.log("Server ready on port 3000."));
   })
   .catch((err) => {
     console.log("error database connection", err);
