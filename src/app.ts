@@ -7,7 +7,6 @@ import { router as userRouter } from "./routes/user";
 
 dotenv.config();
 const databaseUrl = process.env.MONGODB_URI as string;
-const port = process.env.PORT as string;
 const app: Express = express();
 
 app.use(bodyParser.json());
@@ -33,12 +32,10 @@ app.use((error: Error, req: Request, res: Response, next: any) => {
   console.log("error", error);
   res.status(status).json({ message: message, data: data });
 });
-console.log("port::", port);
 
 connect(databaseUrl)
   .then((res) => {
-    console.log("connected");
-    app.listen(port || 8080);
+    app.listen(3000, () => console.log("Server ready on port 3000."));
   })
   .catch((err) => {
     console.log("error database connection", err);
