@@ -2,11 +2,9 @@ import {
   CATEGORY_NOT_FOUND,
   NOT_AUTHORIZED,
   POST_CATEGORY_ERROR,
-} from "./../../constants";
-import { Category } from "../models/category";
-import { Response, NextFunction } from "express";
-import { FieldValidationError, validationResult } from "express-validator";
-import { CustomRequest } from "../types";
+} from "../../constants.js";
+import { Category } from "../models/category.js";
+import { validationResult } from "express-validator";
 import {
   DELETE_CATEGORIES_SUCCESS,
   ENTER_VALID_INPUT,
@@ -14,14 +12,10 @@ import {
   POST_CATEGORIES_SUCCESS,
   PUT_CATEGORIES_SUCCESS,
   USER_NOT_FOUND,
-} from "../../constants";
-import { generateFieldValidationErrorMessage } from "../../utils";
+} from "../../constants.js";
+import { generateFieldValidationErrorMessage } from "../../utils.js";
 
-export const getCategories = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-) => {
+export const getCategories = async (req, res, next) => {
   try {
     const userId = req?.userId;
     if (userId) {
@@ -36,11 +30,7 @@ export const getCategories = async (
     next(error);
   }
 };
-export const addCategory = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-) => {
+export const addCategory = async (req, res, next) => {
   try {
     const { title, icon } = req.body;
     const errors = validationResult(req);
@@ -49,9 +39,7 @@ export const addCategory = async (
       const error = new Error(ENTER_VALID_INPUT);
 
       if (errors.array()[0].type === "field") {
-        error.message = generateFieldValidationErrorMessage(
-          errors.array() as FieldValidationError[]
-        );
+        error.message = generateFieldValidationErrorMessage(errors.array());
       }
       throw error;
     }
@@ -74,11 +62,7 @@ export const addCategory = async (
   }
 };
 
-export const updateCategory = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-) => {
+export const updateCategory = async (req, res, next) => {
   try {
     const { title, icon } = req.body;
     const errors = validationResult(req);
@@ -86,9 +70,7 @@ export const updateCategory = async (
       const error = new Error(ENTER_VALID_INPUT);
 
       if (errors.array()[0].type === "field") {
-        error.message = generateFieldValidationErrorMessage(
-          errors.array() as FieldValidationError[]
-        );
+        error.message = generateFieldValidationErrorMessage(errors.array());
       }
       throw error;
     }
@@ -109,11 +91,7 @@ export const updateCategory = async (
     next(err);
   }
 };
-export const deleteCategory = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-) => {
+export const deleteCategory = async (req, res, next) => {
   try {
     const categoryId = req.params.categoryId;
     const category = await Category.findById(categoryId);

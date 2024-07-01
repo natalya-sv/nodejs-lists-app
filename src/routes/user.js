@@ -1,8 +1,8 @@
 import express from "express";
 import { body } from "express-validator";
-import { User } from "../models/user";
-import { createUser, login } from "../controllers/user";
-import { EMAIL_EXISTS, ENTER_VALID_EMAIL } from "../../constants";
+import { User } from "../models/user.js";
+import { createUser, login } from "../controllers/user.js";
+import { EMAIL_EXISTS, ENTER_VALID_EMAIL } from "../../constants.js";
 
 export const router = express.Router();
 
@@ -10,7 +10,7 @@ router.post("/signup", [
   body("email")
     .isEmail()
     .withMessage(ENTER_VALID_EMAIL)
-    .custom((email: string, { req: Request }) => {
+    .custom((email) => {
       return User.findOne({ email: email }).then((userDoc) => {
         if (userDoc) {
           return Promise.reject(EMAIL_EXISTS);

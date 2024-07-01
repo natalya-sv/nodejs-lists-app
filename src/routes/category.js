@@ -4,8 +4,8 @@ import {
   deleteCategory,
   getCategories,
   updateCategory,
-} from "../controllers/category";
-import { isAuth } from "../middleware/isAuth";
+} from "../controllers/category.js";
+import { isAuth } from "../middleware/isAuth.js";
 import { body } from "express-validator";
 
 export const router = express.Router();
