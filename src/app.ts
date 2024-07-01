@@ -2,9 +2,8 @@ import express, { Express, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import { connect } from "mongoose";
 import dotenv from "dotenv";
-import { router as categoriesRouter } from "../../src/routes/category";
-import { router as userRouter } from "../../src/routes/user";
-import serverless from "serverless-http";
+import { router as categoriesRouter } from "./routes/category";
+import { router as userRouter } from "./routes/user";
 
 dotenv.config();
 const databaseUrl = process.env.MONGODB_URI as string;
@@ -41,4 +40,4 @@ connect(databaseUrl)
   .catch((err) => {
     console.log("error database connection", err);
   });
-export const handler = serverless(app);
+export default app;
