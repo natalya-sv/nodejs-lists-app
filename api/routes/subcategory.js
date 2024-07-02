@@ -1,25 +1,33 @@
 import express from "express";
 import { isAuth } from "../middleware/isAuth.js";
 import { body } from "express-validator";
+import {
+  addSubcategory,
+  deleteSubcategory,
+  getSubcategories,
+  getSubcategory,
+  updateSubcategory,
+} from "../controllers/subcategory.js";
 
 export const router = express.Router();
 
-//get all subcategories
-router.get("/subcategories", isAuth);
+//get subcategories by categoryId (cargory id is in the request body)
+router.get("/subcategories", isAuth, getSubcategories);
 
-//get subcategories by categoryId
-router.get("/subcategories/:categoryId", isAuth);
+//get subcategory by id
+router.get("/subcategories/:subcategoryId", isAuth, getSubcategory);
 
-router.get("/subcategories/:subcategoryId", isAuth);
-
+//add new subcategory to the corresponding category
 router.post(
   "/subcategories/:categoryId",
   [body("title").trim().isLength({ min: 3 })],
-  isAuth
+  isAuth,
+  addSubcategory
 );
 router.put(
   "/subcategories/:subcategoryId",
   [body("title").trim().isLength({ min: 3 })],
-  isAuth
+  isAuth,
+  updateSubcategory
 );
-router.delete("/subcategories/:subcategoryId", isAuth);
+router.delete("/subcategories/:subcategoryId", isAuth, deleteSubcategory);
