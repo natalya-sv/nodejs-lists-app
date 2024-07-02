@@ -5,6 +5,7 @@ import {
   getCategories,
   updateCategory,
   getTestData,
+  getCategory,
 } from "../controllers/category.js";
 import { isAuth } from "../middleware/isAuth.js";
 import { body } from "express-validator";
@@ -12,6 +13,7 @@ import { body } from "express-validator";
 export const router = express.Router();
 
 router.get("/categories", isAuth, getCategories);
+router.get("/categories/:categoryId", isAuth, getCategory);
 router.post(
   "/categories",
   [

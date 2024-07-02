@@ -1,5 +1,6 @@
 import {
   CATEGORY_NOT_FOUND,
+  GET_CATEGORY_SUCCESS,
   NOT_AUTHORIZED,
   POST_CATEGORY_ERROR,
 } from "../../constants.js";
@@ -19,6 +20,27 @@ export const getTestData = (req, res, next) => {
   res.status(200).json({ message: "Test message is returned" });
 };
 
+export const getCategory = async (req, res, next) => {
+  try {
+    const categoryId = req.params.categoryId;
+    const userId = req?.userId;
+
+    if (userId) {
+      const category = await Category.findById(categoryId);
+      if (!category) {
+        const error = new Error(CATEGORY_NOT_FOUND);
+        throw error;
+      }
+      res
+        .status(200)
+        .json({ message: GET_CATEGORY_SUCCESS, category: category });
+    } else {
+      throw new Error(USER_NOT_FOUND);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 export const getCategories = async (req, res, next) => {
   try {
     const userId = req?.userId;
@@ -90,7 +112,7 @@ export const updateCategory = async (req, res, next) => {
     const updatedCategory = await category.save();
     res
       .status(200)
-      .json({ message: PUT_CATEGORIES_SUCCESS, goal: updatedCategory });
+      .json({ message: PUT_CATEGORIES_SUCCESS, category: updatedCategory });
   } catch (err) {
     next(err);
   }
