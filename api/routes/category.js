@@ -4,8 +4,9 @@ import {
   deleteCategory,
   getCategories,
   updateCategory,
-} from "../controllers/category";
-import { isAuth } from "../middleware/isAuth";
+  getTestData,
+} from "../controllers/category.js";
+import { isAuth } from "../middleware/isAuth.js";
 import { body } from "express-validator";
 
 export const router = express.Router();
@@ -30,3 +31,4 @@ router.put(
   updateCategory
 );
 router.delete("/categories/:categoryId", isAuth, deleteCategory);
+router.get("/test", getTestData);

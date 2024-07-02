@@ -1,8 +1,4 @@
-import { FieldValidationError, ValidationError } from "express-validator";
-
-export const generateFieldValidationErrorMessage = (
-  validationError: FieldValidationError[]
-) => {
+export const generateFieldValidationErrorMessage = (validationError) => {
   let errorMessage = "";
   if (validationError.length > 0) {
     for (let i = 0; i < validationError.length; i++) {
@@ -11,7 +7,7 @@ export const generateFieldValidationErrorMessage = (
       }
     }
   } else {
-    errorMessage = "Error occured!Check your input";
+    errorMessage = "Error occured!Check your input and try again!";
   }
   return errorMessage;
 };

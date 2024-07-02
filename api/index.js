@@ -1,21 +1,21 @@
-import express, { Express, Request, Response, NextFunction } from "express";
+import express from "express";
 import bodyParser from "body-parser";
 import { connect } from "mongoose";
 import dotenv from "dotenv";
-import { router as categoriesRouter } from "./routes/category";
-import { router as userRouter } from "./routes/user";
+import { router as categoriesRouter } from "./routes/category.js";
+import { router as userRouter } from "./routes/user.js";
 
 dotenv.config();
-const databaseUrl = process.env.MONGODB_URI as string;
-const app: Express = express();
+const databaseUrl = process.env.MONGODB_URI;
+const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.json());
+
 app.use(express.urlencoded({ extended: false }));
 app.use(categoriesRouter);
 app.use(userRouter);
 
-app.use((req: Request, res: Response, next: NextFunction) => {
+app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader(
     "Access-Control-Allow-Methods",
@@ -25,7 +25,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.use((error: Error, req: Request, res: Response, next: any) => {
+app.use((error, req, res, next) => {
   const status = 500;
   const message = error.message;
   const data = error;
