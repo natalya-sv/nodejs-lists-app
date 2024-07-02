@@ -7,7 +7,7 @@ export const generateFieldValidationErrorMessage = (validationError) => {
       }
     }
   } else {
-    errorMessage = "Error occured!Check your input";
+    errorMessage = "Error occured!Check your input and try again!";
   }
   return errorMessage;
 };

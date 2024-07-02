@@ -16,8 +16,9 @@ import {
 import { generateFieldValidationErrorMessage } from "../../utils.js";
 
 export const getTestData = (req, res, next) => {
-  res.status(200).json({ message: "Test messaged returned" });
+  res.status(200).json({ message: "Test message is returned" });
 };
+
 export const getCategories = async (req, res, next) => {
   try {
     const userId = req?.userId;
