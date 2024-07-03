@@ -117,7 +117,6 @@ export const updateSubcategory = async (req, res, next) => {
       throw error;
     }
     subcategory.title = title ?? subcategory.title;
-    subcategory.categoryId = categoryId ?? subcategory.categoryId;
 
     const updatedSubcategory = await subcategory.save();
     res.status(200).json({
