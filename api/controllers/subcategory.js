@@ -5,6 +5,7 @@ import {
   DELETE_SUBCATEGORIES_SUCCESS,
   GET_SUBCATEGORIES_SUCCESS,
   GET_SUBCATEGORY_SUCCESS,
+  NOT_AUTHORIZED,
   POST_SUBCATEGORIES_SUCCESS,
   POST_SUBCATEGORY_ERROR,
   PUT_SUBCATEGORIES_SUCCESS,
@@ -14,11 +15,16 @@ import {
 export const getSubcategory = async (req, res, next) => {
   try {
     const subcategoryId = req.params.subcategoryId;
-
+    const userId = req.userId;
     if (subcategoryId) {
       const subcategory = await Subcategory.findById(subcategoryId);
       if (!subcategory) {
         const error = new Error(SUBCATEGORY_NOT_FOUND);
+        throw error;
+      }
+
+      if (subcategory.userId.toString() !== userId) {
+        const error = new Error(NOT_AUTHORIZED);
         throw error;
       }
       res
@@ -34,8 +40,13 @@ export const getSubcategory = async (req, res, next) => {
 export const getSubcategories = async (req, res, next) => {
   try {
     const { categoryId } = req?.body;
-    if (categoryId) {
-      const subcategories = await Subcategory.find({ categoryId: categoryId });
+    const userId = req.userId;
+    if (categoryId && userId) {
+      const subcategories = await Subcategory.find({
+        categoryId: categoryId,
+        userId: userId,
+      });
+
       res.status(200).json({
         message: GET_SUBCATEGORIES_SUCCESS,
         subcategories: subcategories,
@@ -51,6 +62,7 @@ export const addSubcategory = async (req, res, next) => {
   try {
     const { title } = req.body;
     const errors = validationResult(req);
+    const userId = req.userId;
 
     if (!errors.isEmpty()) {
       const error = new Error(ENTER_VALID_INPUT);
@@ -63,6 +75,7 @@ export const addSubcategory = async (req, res, next) => {
     const newSubcategory = new Subcategory({
       title: title,
       categoryId: req.params.categoryId,
+      userId: userId,
     });
     const result = await newSubcategory.save();
     if (result) {
@@ -83,6 +96,8 @@ export const updateSubcategory = async (req, res, next) => {
     const subcategoryId = req.params.subcategoryId;
     const { title, categoryId } = req.body;
     const errors = validationResult(req);
+    const userId = req.userId;
+
     if (!errors.isEmpty()) {
       const error = new Error(ENTER_VALID_INPUT);
 
@@ -94,6 +109,11 @@ export const updateSubcategory = async (req, res, next) => {
     const subcategory = await Subcategory.findById(subcategoryId);
     if (!subcategory) {
       const error = new Error(SUBCATEGORY_NOT_FOUND);
+      throw error;
+    }
+
+    if (subcategory.userId.toString() !== userId) {
+      const error = new Error(NOT_AUTHORIZED);
       throw error;
     }
     subcategory.title = title ?? subcategory.title;
@@ -111,12 +131,18 @@ export const updateSubcategory = async (req, res, next) => {
 export const deleteSubcategory = async (req, res, next) => {
   try {
     const subcategoryId = req.params.subcategoryId;
+    const userId = req.userId;
+
     const subcategory = await Subcategory.findById(subcategoryId);
     if (!subcategory) {
       const error = new Error(SUBCATEGORY_NOT_FOUND);
       throw error;
     }
 
+    if (subcategory.userId.toString() !== userId) {
+      const error = new Error(NOT_AUTHORIZED);
+      throw error;
+    }
     await Subcategory.findByIdAndRemove(subcategoryId);
     res.status(200).json({ message: DELETE_SUBCATEGORIES_SUCCESS });
   } catch (err) {
