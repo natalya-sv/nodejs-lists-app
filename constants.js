@@ -6,12 +6,21 @@ export const USER_NOT_FOUND = "User not found";
 export const PASSWORD_RULES = "Password must be at least 7 characters";
 export const PASSWORD_WPONG = "Password is not correct";
 
-export const GET_CATEGORIES_SUCCESS = '"Categories fetched"';
+export const GET_CATEGORIES_SUCCESS = "Categories fetched";
+export const GET_CATEGORY_SUCCESS = "Category fetched";
 export const POST_CATEGORIES_SUCCESS = "Category created";
 export const PUT_CATEGORIES_SUCCESS = "Category updated";
 export const DELETE_CATEGORIES_SUCCESS = "Category deleted";
 export const CATEGORY_NOT_FOUND = "Category not found";
 export const POST_CATEGORY_ERROR = "Error creating new category";
+
+export const GET_SUBCATEGORIES_SUCCESS = "Subcategories fetched";
+export const GET_SUBCATEGORY_SUCCESS = "Subcategory fetched";
+export const POST_SUBCATEGORIES_SUCCESS = "Subcategory created";
+export const PUT_SUBCATEGORIES_SUCCESS = "Subcategory updated";
+export const DELETE_SUBCATEGORIES_SUCCESS = "Subcategory deleted";
+export const SUBCATEGORY_NOT_FOUND = "Subcategory not found";
+export const POST_SUBCATEGORY_ERROR = "Error creating new subcategory";
 
 export const AUTH_NOT_PROVIDED = "No auth header provided";
 export const USER_NOT_AUTH = "Not Authenticated";

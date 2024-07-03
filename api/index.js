@@ -4,7 +4,7 @@ import { connect } from "mongoose";
 import dotenv from "dotenv";
 import { router as categoriesRouter } from "./routes/category.js";
 import { router as userRouter } from "./routes/user.js";
-
+import { router as subcategoryRouter } from "./routes/subcategory.js";
 dotenv.config();
 const databaseUrl = process.env.MONGODB_URI;
 const app = express();
@@ -14,6 +14,7 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(categoriesRouter);
 app.use(userRouter);
+app.use(subcategoryRouter);
 
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");

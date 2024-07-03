@@ -1,5 +1,6 @@
 import {
   CATEGORY_NOT_FOUND,
+  GET_CATEGORY_SUCCESS,
   NOT_AUTHORIZED,
   POST_CATEGORY_ERROR,
 } from "../../constants.js";
@@ -19,6 +20,30 @@ export const getTestData = (req, res, next) => {
   res.status(200).json({ message: "Test message is returned" });
 };
 
+export const getCategory = async (req, res, next) => {
+  try {
+    const categoryId = req.params.categoryId;
+    const userId = req?.userId;
+    if (userId) {
+      const category = await Category.findById(categoryId);
+      if (!category) {
+        const error = new Error(CATEGORY_NOT_FOUND);
+        throw error;
+      }
+      if (category.userId.toString() !== userId) {
+        const error = new Error(NOT_AUTHORIZED);
+        throw error;
+      }
+      res
+        .status(200)
+        .json({ message: GET_CATEGORY_SUCCESS, category: category });
+    } else {
+      throw new Error(USER_NOT_FOUND);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
 export const getCategories = async (req, res, next) => {
   try {
     const userId = req?.userId;
@@ -38,28 +63,32 @@ export const addCategory = async (req, res, next) => {
   try {
     const { title, icon } = req.body;
     const errors = validationResult(req);
+    const userId = req.userId;
+    if (userId) {
+      if (!errors.isEmpty()) {
+        const error = new Error(ENTER_VALID_INPUT);
 
-    if (!errors.isEmpty()) {
-      const error = new Error(ENTER_VALID_INPUT);
-
-      if (errors.array()[0].type === "field") {
-        error.message = generateFieldValidationErrorMessage(errors.array());
+        if (errors.array()[0].type === "field") {
+          error.message = generateFieldValidationErrorMessage(errors.array());
+        }
+        throw error;
       }
-      throw error;
-    }
-    const newCategory = new Category({
-      title: title,
-      icon: icon,
-      userId: req.userId,
-    });
-    const result = await newCategory.save();
-    if (result) {
-      res.status(201).json({
-        message: POST_CATEGORIES_SUCCESS,
-        category: newCategory,
+      const newCategory = new Category({
+        title: title,
+        icon: icon,
+        userId: userId,
       });
+      const result = await newCategory.save();
+      if (result) {
+        res.status(201).json({
+          message: POST_CATEGORIES_SUCCESS,
+          category: newCategory,
+        });
+      } else {
+        throw new Error(POST_CATEGORY_ERROR);
+      }
     } else {
-      throw new Error(POST_CATEGORY_ERROR);
+      throw new Error(USER_NOT_FOUND);
     }
   } catch (err) {
     next(err);
@@ -70,6 +99,9 @@ export const updateCategory = async (req, res, next) => {
   try {
     const { title, icon } = req.body;
     const errors = validationResult(req);
+    const userId = req.userId;
+    const categoryId = req.params.categoryId;
+
     if (!errors.isEmpty()) {
       const error = new Error(ENTER_VALID_INPUT);
 
@@ -78,10 +110,14 @@ export const updateCategory = async (req, res, next) => {
       }
       throw error;
     }
-    const categoryId = req.params.categoryId;
     const category = await Category.findById(categoryId);
+
     if (!category) {
       const error = new Error(CATEGORY_NOT_FOUND);
+      throw error;
+    }
+    if (category.userId.toString() !== userId) {
+      const error = new Error(NOT_AUTHORIZED);
       throw error;
     }
     category.title = title ?? category.title;
@@ -90,7 +126,7 @@ export const updateCategory = async (req, res, next) => {
     const updatedCategory = await category.save();
     res
       .status(200)
-      .json({ message: PUT_CATEGORIES_SUCCESS, goal: updatedCategory });
+      .json({ message: PUT_CATEGORIES_SUCCESS, category: updatedCategory });
   } catch (err) {
     next(err);
   }
@@ -98,12 +134,14 @@ export const updateCategory = async (req, res, next) => {
 export const deleteCategory = async (req, res, next) => {
   try {
     const categoryId = req.params.categoryId;
+    const userId = req.userId;
     const category = await Category.findById(categoryId);
+
     if (!category) {
       const error = new Error(CATEGORY_NOT_FOUND);
       throw error;
     }
-    if (category.userId.toString() !== req.userId) {
+    if (category.userId.toString() !== userId) {
       const error = new Error(NOT_AUTHORIZED);
       throw error;
     }
