@@ -49,7 +49,6 @@ export const getCategories = async (req, res, next) => {
     const userId = req?.userId;
     if (userId) {
       const categories = await Category.find({ userId: userId });
-      console.log("categories", categories);
       res
         .status(200)
         .json({ message: GET_CATEGORIES_SUCCESS, categories: categories });
