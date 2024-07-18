@@ -22,6 +22,14 @@ export const DELETE_SUBCATEGORIES_SUCCESS = "Subcategory deleted";
 export const SUBCATEGORY_NOT_FOUND = "Subcategory not found";
 export const POST_SUBCATEGORY_ERROR = "Error creating new subcategory";
 
+export const GET_SUBCATEGORY_ITEMS_SUCCESS = "Subcategories items fetched";
+export const POST_SUBCATEGORY_ITEM_SUCCESS = "Subcategory item created";
+export const PUT_SUBCATEGORY_ITEM_SUCCESS = "Subcategory item updated";
+export const DELETE_SUBCATEGORY_ITEM_SUCCESS = "Subcategory item deleted";
+export const SUBCATEGORY_ITEM_NOT_FOUND = "Subcategory item not found";
+export const POST_SUBCATEGORY_ITEM_ERROR =
+  "Error creating new subcategory item";
+
 export const AUTH_NOT_PROVIDED = "No auth header provided";
 export const USER_NOT_AUTH = "Not Authenticated";
 export const ENTER_VALID_INPUT = "Error occured. Enter valid input";
