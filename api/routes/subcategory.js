@@ -1,5 +1,5 @@
 import express from "express";
-import { isAuth } from "../middleware/isAuth.js";
+import { isAuth } from "../../utils.js";
 import { body } from "express-validator";
 import {
   addSubcategory,
