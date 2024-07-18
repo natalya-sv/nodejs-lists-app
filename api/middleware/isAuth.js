@@ -1,12 +1,13 @@
 import dotenv from "dotenv";
 import { AUTH_NOT_PROVIDED, USER_NOT_AUTH } from "../../constants.js";
 import jsonwebtoken from "jsonwebtoken";
+import { User } from "../models/user.js";
 
 dotenv.config();
 const secret = process.env.SECRET_JWT;
 
 //checks if user is authorized
-export const isAuth = (req, res, next) => {
+export const isAuth = async (req, res, next) => {
   try {
     const authHeader = req.get("Authorization");
     if (!authHeader) {
@@ -19,10 +20,13 @@ export const isAuth = (req, res, next) => {
       const error = new Error(USER_NOT_AUTH);
       throw error;
     }
-
+    const user = await User.findById(decodedToken.userId);
+    if (!user) {
+      throw new Error("User not found");
+    }
     req.userId = decodedToken.userId;
     next();
   } catch (err) {
-    throw err;
+    next(err);
   }
 };
