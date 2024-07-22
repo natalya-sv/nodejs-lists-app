@@ -8,9 +8,11 @@ import {
   NOT_AUTHORIZED,
   POST_SUBCATEGORIES_SUCCESS,
   POST_SUBCATEGORY_ERROR,
+  POST_SUBCATEGORY_NOT_FOUND_ERROR,
   PUT_SUBCATEGORIES_SUCCESS,
   SUBCATEGORY_NOT_FOUND,
 } from "../../constants.js";
+import { Category } from "../models/category.js";
 
 export const getSubcategory = async (req, res, next) => {
   try {
@@ -63,7 +65,7 @@ export const addSubcategory = async (req, res, next) => {
     const { title } = req.body;
     const errors = validationResult(req);
     const userId = req.userId;
-
+    const categoryId = req.params.categoryId;
     if (!errors.isEmpty()) {
       const error = new Error(ENTER_VALID_INPUT);
 
@@ -72,19 +74,26 @@ export const addSubcategory = async (req, res, next) => {
       }
       throw error;
     }
-    const newSubcategory = new Subcategory({
-      title: title,
-      categoryId: req.params.categoryId,
-      userId: userId,
-    });
-    const result = await newSubcategory.save();
-    if (result) {
-      res.status(201).json({
-        message: POST_SUBCATEGORIES_SUCCESS,
-        subcategory: newSubcategory,
-      });
-    } else {
-      throw new Error(POST_SUBCATEGORY_ERROR);
+    if (categoryId) {
+      const hasCategory = await Category.findById(categoryId);
+      if (hasCategory && hasCategory.userId.toString() === userId) {
+        const newSubcategory = new Subcategory({
+          title: title,
+          categoryId: categoryId,
+          userId: userId,
+        });
+        const result = await newSubcategory.save();
+        if (result) {
+          res.status(201).json({
+            message: POST_SUBCATEGORIES_SUCCESS,
+            subcategory: newSubcategory,
+          });
+        } else {
+          throw new Error(POST_SUBCATEGORY_ERROR);
+        }
+      } else {
+        throw new Error(POST_SUBCATEGORY_NOT_FOUND_ERROR);
+      }
     }
   } catch (err) {
     next(err);
@@ -94,7 +103,7 @@ export const addSubcategory = async (req, res, next) => {
 export const updateSubcategory = async (req, res, next) => {
   try {
     const subcategoryId = req.params.subcategoryId;
-    const { title, categoryId } = req.body;
+    const { title } = req.body;
     const errors = validationResult(req);
     const userId = req.userId;
 

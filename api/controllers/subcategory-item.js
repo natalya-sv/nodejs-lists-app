@@ -8,10 +8,12 @@ import {
   PUT_SUBCATEGORY_ITEM_SUCCESS,
   DELETE_SUBCATEGORY_ITEM_SUCCESS,
   ENTER_VALID_INPUT,
+  POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR,
 } from "../../constants.js";
 import { SubcategoryItem } from "../models/subcategoryItem.js";
 import { validationResult } from "express-validator";
 import { generateFieldValidationErrorMessage } from "../../utils.js";
+import { Subcategory } from "../models/subcategory.js";
 
 export const getSubcategoryItemsBySubcategoryId = async (req, res, next) => {
   try {
@@ -50,18 +52,23 @@ export const addSubcategoryItem = async (req, res, next) => {
       throw error;
     }
     if (subcategoryId) {
-      const newSubcategoryItem = new SubcategoryItem({
-        title: title,
-        description: description ?? "",
-        subcategoryId: subcategoryId,
-        userId: userId,
-      });
-      const result = await newSubcategoryItem.save();
-      if (result) {
-        res.status(201).json({
-          message: POST_SUBCATEGORY_ITEM_SUCCESS,
-          subcategoryItem: newSubcategoryItem,
+      const hasSubCategory = await Subcategory.findById(subcategoryId);
+      if (hasSubCategory && hasSubCategory.userId.toString() === userId) {
+        const newSubcategoryItem = new SubcategoryItem({
+          title: title,
+          description: description ?? "",
+          subcategoryId: subcategoryId,
+          userId: userId,
         });
+        const result = await newSubcategoryItem.save();
+        if (result) {
+          res.status(201).json({
+            message: POST_SUBCATEGORY_ITEM_SUCCESS,
+            subcategoryItem: newSubcategoryItem,
+          });
+        }
+      } else {
+        throw new Error(POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR);
       }
     } else {
       throw new Error(POST_SUBCATEGORY_ITEM_ERROR);
