@@ -26,7 +26,7 @@ app.use(categoriesRouter);
 app.use(userRouter);
 app.use(subcategoryRouter);
 app.use(subcategoryItemsRouter);
-app.use((error, req, res, next) => {
+app.use((error, req, res) => {
   const status = 500;
   const message = error.message;
   const data = error;
@@ -35,7 +35,7 @@ app.use((error, req, res, next) => {
 });
 
 connect(databaseUrl)
-  .then((res) => {
+  .then(() => {
     app.listen(8080, () => console.log("Server ready on port 8080"));
   })
   .catch((err) => {
