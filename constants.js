@@ -20,6 +20,8 @@ export const POST_SUBCATEGORIES_SUCCESS = "Subcategory created";
 export const PUT_SUBCATEGORIES_SUCCESS = "Subcategory updated";
 export const DELETE_SUBCATEGORIES_SUCCESS = "Subcategory deleted";
 export const SUBCATEGORY_NOT_FOUND = "Subcategory not found";
+export const SUBCATEGORIES_NOT_FOUND = "Subcategories not found";
+
 export const POST_SUBCATEGORY_ERROR = "Error creating new subcategory";
 export const POST_SUBCATEGORY_NOT_FOUND_ERROR = "Error: category not found";
 

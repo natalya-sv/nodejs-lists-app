@@ -4,6 +4,7 @@ import {
   USER_NOT_AUTH,
   EMAIL_EXISTS,
   ENTER_VALID_EMAIL,
+  USER_NOT_FOUND,
 } from "./constants.js";
 import jsonwebtoken from "jsonwebtoken";
 import { User } from "./api/models/user.js";
@@ -50,7 +51,7 @@ export const isAuth = async (req, res, next) => {
     }
     const user = await User.findById(decodedToken.userId);
     if (!user) {
-      throw new Error("User not found");
+      throw new Error(USER_NOT_FOUND);
     }
     req.userId = decodedToken.userId;
     next();

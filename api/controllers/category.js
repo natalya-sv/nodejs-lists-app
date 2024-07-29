@@ -12,11 +12,26 @@ import {
   GET_CATEGORIES_SUCCESS,
   POST_CATEGORIES_SUCCESS,
   PUT_CATEGORIES_SUCCESS,
-  USER_NOT_FOUND,
 } from "../../constants.js";
 import { generateFieldValidationErrorMessage } from "../../utils.js";
 
-export const getTestData = (req, res, next) => {
+const categoryExists = async (categoryId, userId) => {
+  const category = await Category.findById(categoryId);
+  const categoryItem = { category: null, error: null };
+  if (!category) {
+    categoryItem.error = CATEGORY_NOT_FOUND;
+    return categoryItem;
+  }
+  if (category.userId.toString() !== userId) {
+    categoryItem.error = NOT_AUTHORIZED;
+    return categoryItem;
+  }
+  categoryItem.category = category;
+
+  return categoryItem;
+};
+
+export const getTestData = (req, res) => {
   res.status(200).json({ message: "Test message is returned" });
 };
 
@@ -24,21 +39,16 @@ export const getCategory = async (req, res, next) => {
   try {
     const categoryId = req.params.categoryId;
     const userId = req?.userId;
-    if (userId) {
-      const category = await Category.findById(categoryId);
-      if (!category) {
-        const error = new Error(CATEGORY_NOT_FOUND);
-        throw error;
-      }
-      if (category.userId.toString() !== userId) {
-        const error = new Error(NOT_AUTHORIZED);
-        throw error;
-      }
-      res
-        .status(200)
-        .json({ message: GET_CATEGORY_SUCCESS, category: category });
+
+    const categoryItem = await categoryExists(categoryId, userId);
+
+    if (categoryItem.category) {
+      res.status(200).json({
+        message: GET_CATEGORY_SUCCESS,
+        category: categoryItem.category,
+      });
     } else {
-      throw new Error(USER_NOT_FOUND);
+      throw new Error(categoryItem.error);
     }
   } catch (error) {
     next(error);
@@ -47,14 +57,10 @@ export const getCategory = async (req, res, next) => {
 export const getCategories = async (req, res, next) => {
   try {
     const userId = req?.userId;
-    if (userId) {
-      const categories = await Category.find({ userId: userId });
-      res
-        .status(200)
-        .json({ message: GET_CATEGORIES_SUCCESS, categories: categories });
-    } else {
-      throw new Error(USER_NOT_FOUND);
-    }
+    const categories = await Category.find({ userId: userId });
+    res
+      .status(200)
+      .json({ message: GET_CATEGORIES_SUCCESS, categories: categories });
   } catch (error) {
     next(error);
   }
@@ -64,31 +70,28 @@ export const addCategory = async (req, res, next) => {
     const { title, icon } = req.body;
     const errors = validationResult(req);
     const userId = req.userId;
-    if (userId) {
-      if (!errors.isEmpty()) {
-        const error = new Error(ENTER_VALID_INPUT);
 
-        if (errors.array()[0].type === "field") {
-          error.message = generateFieldValidationErrorMessage(errors.array());
-        }
-        throw error;
+    if (!errors.isEmpty()) {
+      const error = new Error(ENTER_VALID_INPUT);
+
+      if (errors.array()[0].type === "field") {
+        error.message = generateFieldValidationErrorMessage(errors.array());
       }
-      const newCategory = new Category({
-        title: title,
-        icon: icon,
-        userId: userId,
+      throw error;
+    }
+    const newCategory = new Category({
+      title: title,
+      icon: icon,
+      userId: userId,
+    });
+    const result = await newCategory.save();
+    if (result) {
+      res.status(201).json({
+        message: POST_CATEGORIES_SUCCESS,
+        category: newCategory,
       });
-      const result = await newCategory.save();
-      if (result) {
-        res.status(201).json({
-          message: POST_CATEGORIES_SUCCESS,
-          category: newCategory,
-        });
-      } else {
-        throw new Error(POST_CATEGORY_ERROR);
-      }
     } else {
-      throw new Error(USER_NOT_FOUND);
+      throw new Error(POST_CATEGORY_ERROR);
     }
   } catch (err) {
     next(err);
@@ -110,23 +113,18 @@ export const updateCategory = async (req, res, next) => {
       }
       throw error;
     }
-    const category = await Category.findById(categoryId);
+    const categoryItem = await categoryExists(categoryId, userId);
+    if (categoryItem.category) {
+      categoryItem.category.title = title ?? categoryItem.category.title;
+      categoryItem.category.icon = icon ?? categoryItem.category.icon;
 
-    if (!category) {
-      const error = new Error(CATEGORY_NOT_FOUND);
-      throw error;
+      const updatedCategory = await categoryItem.category.save();
+      res
+        .status(200)
+        .json({ message: PUT_CATEGORIES_SUCCESS, category: updatedCategory });
+    } else {
+      throw new Error(categoryItem.error);
     }
-    if (category.userId.toString() !== userId) {
-      const error = new Error(NOT_AUTHORIZED);
-      throw error;
-    }
-    category.title = title ?? category.title;
-    category.icon = icon ?? category.icon;
-
-    const updatedCategory = await category.save();
-    res
-      .status(200)
-      .json({ message: PUT_CATEGORIES_SUCCESS, category: updatedCategory });
   } catch (err) {
     next(err);
   }
@@ -135,18 +133,14 @@ export const deleteCategory = async (req, res, next) => {
   try {
     const categoryId = req.params.categoryId;
     const userId = req.userId;
-    const category = await Category.findById(categoryId);
+    const categoryItem = await categoryExists(categoryId, userId);
 
-    if (!category) {
-      const error = new Error(CATEGORY_NOT_FOUND);
-      throw error;
+    if (categoryItem.category) {
+      await Category.findByIdAndRemove(categoryId);
+      res.status(200).json({ message: DELETE_CATEGORIES_SUCCESS });
+    } else {
+      throw new Error(categoryItem.error);
     }
-    if (category.userId.toString() !== userId) {
-      const error = new Error(NOT_AUTHORIZED);
-      throw error;
-    }
-    await Category.findByIdAndRemove(categoryId);
-    res.status(200).json({ message: DELETE_CATEGORIES_SUCCESS });
   } catch (err) {
     next(err);
   }
