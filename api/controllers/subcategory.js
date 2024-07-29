@@ -3,6 +3,7 @@ import { validationResult } from "express-validator";
 import { generateFieldValidationErrorMessage } from "../../utils.js";
 import {
   DELETE_SUBCATEGORIES_SUCCESS,
+  ENTER_VALID_INPUT,
   GET_SUBCATEGORIES_SUCCESS,
   GET_SUBCATEGORY_SUCCESS,
   NOT_AUTHORIZED,
@@ -10,28 +11,42 @@ import {
   POST_SUBCATEGORY_ERROR,
   POST_SUBCATEGORY_NOT_FOUND_ERROR,
   PUT_SUBCATEGORIES_SUCCESS,
+  SUBCATEGORIES_NOT_FOUND,
   SUBCATEGORY_NOT_FOUND,
 } from "../../constants.js";
 import { Category } from "../models/category.js";
 
+const subcategoryExists = async (subcategoryId, userId) => {
+  const subcategory = await Subcategory.findById(subcategoryId);
+  const subcategoryItem = { subcategory: null, error: null };
+
+  if (!subcategory) {
+    subcategoryItem.error = SUBCATEGORY_NOT_FOUND;
+    return subcategoryItem;
+  }
+
+  if (subcategory.userId.toString() !== userId) {
+    subcategoryItem.error = NOT_AUTHORIZED;
+    return subcategoryItem;
+  }
+  subcategoryItem.subcategory = subcategory;
+  return subcategoryItem;
+};
 export const getSubcategory = async (req, res, next) => {
   try {
     const subcategoryId = req.params.subcategoryId;
     const userId = req.userId;
     if (subcategoryId) {
-      const subcategory = await Subcategory.findById(subcategoryId);
-      if (!subcategory) {
-        const error = new Error(SUBCATEGORY_NOT_FOUND);
-        throw error;
-      }
+      const subcategoryItem = await subcategoryExists(subcategoryId, userId);
 
-      if (subcategory.userId.toString() !== userId) {
-        const error = new Error(NOT_AUTHORIZED);
-        throw error;
+      if (subcategoryItem.subcategory) {
+        res.status(200).json({
+          message: GET_SUBCATEGORY_SUCCESS,
+          subcategory: subcategoryItem.subcategory,
+        });
+      } else {
+        throw new Error(subcategoryItem.error);
       }
-      res
-        .status(200)
-        .json({ message: GET_SUBCATEGORY_SUCCESS, subcategory: subcategory });
     } else {
       throw new Error(USER_NOT_FOUND);
     }
@@ -39,11 +54,26 @@ export const getSubcategory = async (req, res, next) => {
     next(error);
   }
 };
+export const getAllSubcategories = async (req, res, next) => {
+  try {
+    const userId = req.userId;
+    const subcategories = await Subcategory.find({
+      userId: userId,
+    });
+
+    res.status(200).json({
+      message: GET_SUBCATEGORIES_SUCCESS,
+      subcategories: subcategories,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 export const getSubcategories = async (req, res, next) => {
   try {
-    const { categoryId } = req?.body;
+    const { categoryId } = req.body;
     const userId = req.userId;
-    if (categoryId && userId) {
+    if (categoryId) {
       const subcategories = await Subcategory.find({
         categoryId: categoryId,
         userId: userId,
@@ -54,7 +84,7 @@ export const getSubcategories = async (req, res, next) => {
         subcategories: subcategories,
       });
     } else {
-      throw new Error(SUBCATEGORY_NOT_FOUND);
+      throw new Error(SUBCATEGORIES_NOT_FOUND);
     }
   } catch (error) {
     next(error);
@@ -115,23 +145,19 @@ export const updateSubcategory = async (req, res, next) => {
       }
       throw error;
     }
-    const subcategory = await Subcategory.findById(subcategoryId);
-    if (!subcategory) {
-      const error = new Error(SUBCATEGORY_NOT_FOUND);
-      throw error;
-    }
+    const subcategoryItem = await subcategoryExists(subcategoryId, userId);
+    if (subcategoryItem.subcategory) {
+      subcategoryItem.subcategory.title =
+        title ?? subcategoryItem.subcategory.title;
 
-    if (subcategory.userId.toString() !== userId) {
-      const error = new Error(NOT_AUTHORIZED);
-      throw error;
+      const updatedSubcategory = await subcategoryItem.subcategory.save();
+      res.status(200).json({
+        message: PUT_SUBCATEGORIES_SUCCESS,
+        subcategory: updatedSubcategory,
+      });
+    } else {
+      throw new Error(subcategoryItem.error);
     }
-    subcategory.title = title ?? subcategory.title;
-
-    const updatedSubcategory = await subcategory.save();
-    res.status(200).json({
-      message: PUT_SUBCATEGORIES_SUCCESS,
-      subcategory: updatedSubcategory,
-    });
   } catch (err) {
     next(err);
   }
@@ -141,18 +167,14 @@ export const deleteSubcategory = async (req, res, next) => {
     const subcategoryId = req.params.subcategoryId;
     const userId = req.userId;
 
-    const subcategory = await Subcategory.findById(subcategoryId);
-    if (!subcategory) {
-      const error = new Error(SUBCATEGORY_NOT_FOUND);
-      throw error;
-    }
+    const subcategoryItem = await subcategoryExists(subcategoryId, userId);
 
-    if (subcategory.userId.toString() !== userId) {
-      const error = new Error(NOT_AUTHORIZED);
-      throw error;
+    if (subcategoryItem.subcategory) {
+      await Subcategory.findByIdAndRemove(subcategoryId);
+      res.status(200).json({ message: DELETE_SUBCATEGORIES_SUCCESS });
+    } else {
+      throw new Error(subcategoryItem.error);
     }
-    await Subcategory.findByIdAndRemove(subcategoryId);
-    res.status(200).json({ message: DELETE_SUBCATEGORIES_SUCCESS });
   } catch (err) {
     next(err);
   }

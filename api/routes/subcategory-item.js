@@ -4,6 +4,7 @@ import { body } from "express-validator";
 import {
   addSubcategoryItem,
   deleteSubcategoryItem,
+  getAllSubcategoryItems,
   getSubcategoryItemsBySubcategoryId,
   updateSubcategoryItem,
 } from "../controllers/subcategory-item.js";
@@ -11,6 +12,7 @@ import {
 export const router = express.Router();
 
 router.get("/subcategory-items", isAuth, getSubcategoryItemsBySubcategoryId);
+router.get("/all-subcategory-items", isAuth, getAllSubcategoryItems);
 
 router.post(
   "/subcategory-items/:subcategoryId",

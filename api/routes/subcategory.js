@@ -4,6 +4,7 @@ import { body } from "express-validator";
 import {
   addSubcategory,
   deleteSubcategory,
+  getAllSubcategories,
   getSubcategories,
   getSubcategory,
   updateSubcategory,
@@ -13,6 +14,8 @@ export const router = express.Router();
 
 //get subcategories by categoryId (category id is in the request body)
 router.get("/subcategories", isAuth, getSubcategories);
+
+router.get("/all-subcategories", isAuth, getAllSubcategories);
 
 //get subcategory by id
 router.get("/subcategories/:subcategoryId", isAuth, getSubcategory);
