@@ -9,6 +9,7 @@ import {
   DELETE_SUBCATEGORY_ITEM_SUCCESS,
   ENTER_VALID_INPUT,
   POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR,
+  POST_SUBCATEGORY_ITEM_TITLE_ERROR,
 } from "../../constants.js";
 import { SubcategoryItem } from "../models/subcategoryItem.js";
 import { validationResult } from "express-validator";
@@ -33,7 +34,7 @@ const subcategoryItemExists = async (subcategoryItemId, userId) => {
 
 export const getSubcategoryItemsBySubcategoryId = async (req, res, next) => {
   try {
-    const { subcategoryId } = req.body;
+    const subcategoryId = req.params.subcategoryId;
     const userId = req.userId;
     if (subcategoryId && userId) {
       const items = await SubcategoryItem.find({
@@ -86,17 +87,30 @@ export const addSubcategoryItem = async (req, res, next) => {
     if (subcategoryId) {
       const hasSubCategory = await Subcategory.findById(subcategoryId);
       if (hasSubCategory && hasSubCategory.userId.toString() === userId) {
-        const newSubcategoryItem = new SubcategoryItem({
+        const subcategoryItemExists = await SubcategoryItem.findOne({
           title: title,
-          description: description ?? "",
-          subcategoryId: subcategoryId,
           userId: userId,
         });
-        const result = await newSubcategoryItem.save();
-        if (result) {
-          res.status(201).json({
-            message: POST_SUBCATEGORY_ITEM_SUCCESS,
-            subcategoryItem: newSubcategoryItem,
+        if (!subcategoryItemExists) {
+          const newSubcategoryItem = new SubcategoryItem({
+            title: title,
+            description: description ?? "",
+            subcategoryId: subcategoryId,
+            userId: userId,
+          });
+          const result = await newSubcategoryItem.save();
+          if (result) {
+            res.status(201).json({
+              message: POST_SUBCATEGORY_ITEM_SUCCESS,
+              subcategoryItem: newSubcategoryItem,
+            });
+          } else {
+            throw new Error(POST_SUBCATEGORY_ITEM_ERROR);
+          }
+        } else {
+          res.status(500).json({
+            message: POST_SUBCATEGORY_ITEM_TITLE_ERROR,
+            subcategoryItem: null,
           });
         }
       } else {

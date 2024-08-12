@@ -13,6 +13,7 @@ export const PUT_CATEGORIES_SUCCESS = "Category updated";
 export const DELETE_CATEGORIES_SUCCESS = "Category deleted";
 export const CATEGORY_NOT_FOUND = "Category not found";
 export const POST_CATEGORY_ERROR = "Error creating new category";
+export const POST_CATEGORY_TITLE_ERROR = "Category title already exists!";
 
 export const GET_SUBCATEGORIES_SUCCESS = "Subcategories fetched";
 export const GET_SUBCATEGORY_SUCCESS = "Subcategory fetched";
@@ -21,6 +22,7 @@ export const PUT_SUBCATEGORIES_SUCCESS = "Subcategory updated";
 export const DELETE_SUBCATEGORIES_SUCCESS = "Subcategory deleted";
 export const SUBCATEGORY_NOT_FOUND = "Subcategory not found";
 export const SUBCATEGORIES_NOT_FOUND = "Subcategories not found";
+export const POST_SUBCATEGORY_TITLE_ERROR = "Subcategory title already exists!";
 
 export const POST_SUBCATEGORY_ERROR = "Error creating new subcategory";
 export const POST_SUBCATEGORY_NOT_FOUND_ERROR = "Error: category not found";
@@ -34,6 +36,8 @@ export const POST_SUBCATEGORY_ITEM_ERROR =
   "Error creating new subcategory item";
 export const POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR =
   "Error: subcategory not found";
+export const POST_SUBCATEGORY_ITEM_TITLE_ERROR =
+  "Subcategory item title already exists!";
 
 export const AUTH_NOT_PROVIDED = "No auth header provided";
 export const USER_NOT_AUTH = "Not Authenticated";

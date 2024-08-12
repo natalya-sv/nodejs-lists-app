@@ -10,6 +10,7 @@ import {
   POST_SUBCATEGORIES_SUCCESS,
   POST_SUBCATEGORY_ERROR,
   POST_SUBCATEGORY_NOT_FOUND_ERROR,
+  POST_SUBCATEGORY_TITLE_ERROR,
   PUT_SUBCATEGORIES_SUCCESS,
   SUBCATEGORIES_NOT_FOUND,
   SUBCATEGORY_NOT_FOUND,
@@ -71,7 +72,7 @@ export const getAllSubcategories = async (req, res, next) => {
 };
 export const getSubcategories = async (req, res, next) => {
   try {
-    const { categoryId } = req.body;
+    const categoryId = req.params.categoryId;
     const userId = req.userId;
     if (categoryId) {
       const subcategories = await Subcategory.find({
@@ -107,19 +108,31 @@ export const addSubcategory = async (req, res, next) => {
     if (categoryId) {
       const hasCategory = await Category.findById(categoryId);
       if (hasCategory && hasCategory.userId.toString() === userId) {
-        const newSubcategory = new Subcategory({
+        const subcategoryExists = await Subcategory.findOne({
           title: title,
-          categoryId: categoryId,
           userId: userId,
         });
-        const result = await newSubcategory.save();
-        if (result) {
-          res.status(201).json({
-            message: POST_SUBCATEGORIES_SUCCESS,
-            subcategory: newSubcategory,
+
+        if (!subcategoryExists) {
+          const newSubcategory = new Subcategory({
+            title: title,
+            categoryId: categoryId,
+            userId: userId,
           });
+          const result = await newSubcategory.save();
+          if (result) {
+            res.status(201).json({
+              message: POST_SUBCATEGORIES_SUCCESS,
+              subcategory: newSubcategory,
+            });
+          } else {
+            throw new Error(POST_SUBCATEGORY_ERROR);
+          }
         } else {
-          throw new Error(POST_SUBCATEGORY_ERROR);
+          res.status(500).json({
+            message: POST_SUBCATEGORY_TITLE_ERROR,
+            subcategory: null,
+          });
         }
       } else {
         throw new Error(POST_SUBCATEGORY_NOT_FOUND_ERROR);
