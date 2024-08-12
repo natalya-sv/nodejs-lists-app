@@ -13,7 +13,7 @@ import {
 export const router = express.Router();
 
 //get subcategories by categoryId (category id is in the request body)
-router.get("/subcategories", isAuth, getSubcategories);
+router.get("/subcategories/category/:categoryId", isAuth, getSubcategories);
 
 router.get("/all-subcategories", isAuth, getAllSubcategories);
 

@@ -11,6 +11,7 @@ import {
   ENTER_VALID_INPUT,
   GET_CATEGORIES_SUCCESS,
   POST_CATEGORIES_SUCCESS,
+  POST_CATEGORY_TITLE_ERROR,
   PUT_CATEGORIES_SUCCESS,
 } from "../../constants.js";
 import { generateFieldValidationErrorMessage } from "../../utils.js";
@@ -79,19 +80,31 @@ export const addCategory = async (req, res, next) => {
       }
       throw error;
     }
-    const newCategory = new Category({
+
+    const categoryExists = await Category.findOne({
       title: title,
-      icon: icon,
       userId: userId,
     });
-    const result = await newCategory.save();
-    if (result) {
-      res.status(201).json({
-        message: POST_CATEGORIES_SUCCESS,
-        category: newCategory,
+    if (!categoryExists) {
+      const newCategory = new Category({
+        title: title,
+        icon: icon,
+        userId: userId,
       });
+      const result = await newCategory.save();
+      if (result) {
+        res.status(201).json({
+          message: POST_CATEGORIES_SUCCESS,
+          category: newCategory,
+        });
+      } else {
+        throw new Error(POST_CATEGORY_ERROR);
+      }
     } else {
-      throw new Error(POST_CATEGORY_ERROR);
+      res.status(500).json({
+        message: POST_CATEGORY_TITLE_ERROR,
+        category: null,
+      });
     }
   } catch (err) {
     next(err);

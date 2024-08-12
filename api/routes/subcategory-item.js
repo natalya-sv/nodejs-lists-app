@@ -11,7 +11,11 @@ import {
 
 export const router = express.Router();
 
-router.get("/subcategory-items", isAuth, getSubcategoryItemsBySubcategoryId);
+router.get(
+  "/subcategory-items/subcategory/:subcategoryId",
+  isAuth,
+  getSubcategoryItemsBySubcategoryId
+);
 router.get("/all-subcategory-items", isAuth, getAllSubcategoryItems);
 
 router.post(
@@ -22,7 +26,6 @@ router.post(
 );
 router.put(
   "/subcategory-items/:subcategoryItemId",
-
   isAuth,
   updateSubcategoryItem
 );
