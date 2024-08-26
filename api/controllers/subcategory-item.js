@@ -150,7 +150,7 @@ export const updateSubcategoryItem = async (req, res, next) => {
         subcategoryItem.subcategoryItem.description =
           description ?? subcategoryItem.subcategoryItem.description;
 
-        const updatedSubcategoryItem = await subcategoryItem.save();
+        const updatedSubcategoryItem = await subcategoryItem.subcategoryItem.save();
         res.status(200).json({
           message: PUT_SUBCATEGORY_ITEM_SUCCESS,
           subcategoryItem: updatedSubcategoryItem,
