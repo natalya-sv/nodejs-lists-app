@@ -13,6 +13,10 @@ const subcategoryItemSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Subcategory",
   },
+  isDone: {
+    type: Boolean,
+    default: false,
+  },
   userId: {
     type: Schema.Types.ObjectId,
     ref: "User",
