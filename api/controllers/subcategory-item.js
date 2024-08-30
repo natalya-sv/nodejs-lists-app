@@ -72,7 +72,7 @@ export const getAllSubcategoryItems = async (req, res, next) => {
 };
 export const addSubcategoryItem = async (req, res, next) => {
   try {
-    const { title, description } = req.body;
+    const { title, description, isDone } = req.body;
     const errors = validationResult(req);
     const userId = req.userId;
     const subcategoryId = req.params.subcategoryId;
@@ -97,6 +97,7 @@ export const addSubcategoryItem = async (req, res, next) => {
             description: description ?? "",
             subcategoryId: subcategoryId,
             userId: userId,
+            isDone: isDone ?? false,
           });
           const result = await newSubcategoryItem.save();
           if (result) {
@@ -127,7 +128,7 @@ export const addSubcategoryItem = async (req, res, next) => {
 export const updateSubcategoryItem = async (req, res, next) => {
   try {
     const subcategoryItemId = req.params.subcategoryItemId;
-    const { title, description } = req.body;
+    const { title, description, isDone } = req.body;
     const errors = validationResult(req);
     const userId = req.userId;
     if (!errors.isEmpty()) {
@@ -149,6 +150,7 @@ export const updateSubcategoryItem = async (req, res, next) => {
           title ?? subcategoryItem.subcategoryItem.title;
         subcategoryItem.subcategoryItem.description =
           description ?? subcategoryItem.subcategoryItem.description;
+        subcategoryItem.subcategoryItem.isDone = isDone ?? subcategoryItem.subcategoryItem.isDone;
 
         const updatedSubcategoryItem = await subcategoryItem.subcategoryItem.save();
         res.status(200).json({
