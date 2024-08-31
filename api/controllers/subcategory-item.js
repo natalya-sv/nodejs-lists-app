@@ -50,7 +50,7 @@ export const getSubcategoryItemsBySubcategoryId = async (req, res, next) => {
       throw new Error(USER_NOT_FOUND);
     }
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error?.message });
   }
 };
 
@@ -67,7 +67,7 @@ export const getAllSubcategoryItems = async (req, res, next) => {
       subcategoryItems: items,
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error?.message });
   }
 };
 export const addSubcategoryItem = async (req, res, next) => {
@@ -82,7 +82,7 @@ export const addSubcategoryItem = async (req, res, next) => {
       if (errors.array()[0].type === "field") {
         error.message = generateFieldValidationErrorMessage(errors.array());
       }
-      throw error;
+      throw new Error(error?.message);
     }
     if (subcategoryId) {
       const hasSubCategory = await Subcategory.findById(subcategoryId);
@@ -121,7 +121,7 @@ export const addSubcategoryItem = async (req, res, next) => {
       throw new Error(POST_SUBCATEGORY_ITEM_ERROR);
     }
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err?.message });
   }
 };
 
@@ -137,7 +137,7 @@ export const updateSubcategoryItem = async (req, res, next) => {
       if (errors.array()[0].type === "field") {
         error.message = generateFieldValidationErrorMessage(errors.array());
       }
-      throw error;
+      throw new Error(error?.message);
     }
     if (subcategoryItemId) {
       const subcategoryItem = await subcategoryItemExists(
@@ -150,9 +150,11 @@ export const updateSubcategoryItem = async (req, res, next) => {
           title ?? subcategoryItem.subcategoryItem.title;
         subcategoryItem.subcategoryItem.description =
           description ?? subcategoryItem.subcategoryItem.description;
-        subcategoryItem.subcategoryItem.isDone = isDone ?? subcategoryItem.subcategoryItem.isDone;
+        subcategoryItem.subcategoryItem.isDone =
+          isDone ?? subcategoryItem.subcategoryItem.isDone;
 
-        const updatedSubcategoryItem = await subcategoryItem.subcategoryItem.save();
+        const updatedSubcategoryItem =
+          await subcategoryItem.subcategoryItem.save();
         res.status(200).json({
           message: PUT_SUBCATEGORY_ITEM_SUCCESS,
           subcategoryItem: updatedSubcategoryItem,
@@ -164,7 +166,7 @@ export const updateSubcategoryItem = async (req, res, next) => {
       throw new Error(SUBCATEGORY_ITEM_NOT_FOUND);
     }
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err?.message });
   }
 };
 export const deleteSubcategoryItem = async (req, res, next) => {
@@ -183,6 +185,6 @@ export const deleteSubcategoryItem = async (req, res, next) => {
       throw new Error(subcategoryItem.error);
     }
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err?.message });
   }
 };

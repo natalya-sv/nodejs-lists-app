@@ -56,7 +56,7 @@ export const isAuth = async (req, res, next) => {
     req.userId = decodedToken.userId;
     next();
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err });
   }
 };
 

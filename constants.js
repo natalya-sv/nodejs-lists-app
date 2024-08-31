@@ -14,6 +14,7 @@ export const DELETE_CATEGORIES_SUCCESS = "Category deleted";
 export const CATEGORY_NOT_FOUND = "Category not found";
 export const POST_CATEGORY_ERROR = "Error creating new category";
 export const POST_CATEGORY_TITLE_ERROR = "Category title already exists!";
+export const GET_CATEGORIES_FAILURE = "Categories not found";
 
 export const GET_SUBCATEGORIES_SUCCESS = "Subcategories fetched";
 export const GET_SUBCATEGORY_SUCCESS = "Subcategory fetched";
