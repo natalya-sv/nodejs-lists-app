@@ -19,9 +19,7 @@ export const createUser = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      const error = new Error(ENTER_VALID_INPUT);
-
-      throw error;
+      throw new Error(ENTER_VALID_INPUT);
     }
     const { email, username, password } = req.body;
 
@@ -39,7 +37,7 @@ export const createUser = async (req, res, next) => {
 
     res.status(201).json({ message: POST_USER_SUCCESS, user: createdUser });
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err?.message });
   }
 };
 
@@ -49,15 +47,14 @@ export const login = async (req, res, next) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email: email });
     if (!user) {
-      const error = new Error(USER_NOT_FOUND);
-      throw error;
+      throw Error(USER_NOT_FOUND);
     } else {
       loadedUser = user;
       const isEqual = await bcrypt.compare(password, user.password);
 
       if (!isEqual) {
         const error = new Error(PASSWORD_WPONG);
-        throw error;
+        throw new Error(error?.message);
       }
 
       if (loadedUser) {
@@ -81,6 +78,6 @@ export const login = async (req, res, next) => {
       }
     }
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err?.message });
   }
 };
