@@ -21,7 +21,7 @@ router.post(
     body("icon").trim().isLength({ min: 3 }),
   ],
   isAuth,
-  addCategory
+  addCategory,
 );
 router.put(
   "/categories/:categoryId",
@@ -30,7 +30,7 @@ router.put(
     body("icon").trim().isLength({ min: 3 }),
   ],
   isAuth,
-  updateCategory
+  updateCategory,
 );
 router.delete("/categories/:categoryId", isAuth, deleteCategory);
 router.get("/test", getTestData);

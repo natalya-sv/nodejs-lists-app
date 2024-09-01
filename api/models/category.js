@@ -20,7 +20,7 @@ const categorySchema = new Schema(
       ref: "User",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Category = model("Category", categorySchema);
