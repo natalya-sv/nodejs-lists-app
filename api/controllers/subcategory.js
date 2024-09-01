@@ -52,7 +52,7 @@ export const getSubcategory = async (req, res, next) => {
       throw new Error(USER_NOT_FOUND);
     }
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error?.message });
   }
 };
 export const getAllSubcategories = async (req, res, next) => {
@@ -67,7 +67,7 @@ export const getAllSubcategories = async (req, res, next) => {
       subcategories: subcategories,
     });
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error?.message });
   }
 };
 export const getSubcategories = async (req, res, next) => {
@@ -88,7 +88,7 @@ export const getSubcategories = async (req, res, next) => {
       throw new Error(SUBCATEGORIES_NOT_FOUND);
     }
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error?.message });
   }
 };
 export const addSubcategory = async (req, res, next) => {
@@ -103,7 +103,7 @@ export const addSubcategory = async (req, res, next) => {
       if (errors.array()[0].type === "field") {
         error.message = generateFieldValidationErrorMessage(errors.array());
       }
-      throw error;
+      throw new Error(error?.message);
     }
     if (categoryId) {
       const hasCategory = await Category.findById(categoryId);
@@ -135,7 +135,7 @@ export const addSubcategory = async (req, res, next) => {
           });
         }
       } else {
-        throw new Error(POST_SUBCATEGORY_NOT_FOUND_ERROR);
+        res.status(500).json({ error: err?.message });
       }
     }
   } catch (err) {
@@ -156,7 +156,7 @@ export const updateSubcategory = async (req, res, next) => {
       if (errors.array()[0].type === "field") {
         error.message = generateFieldValidationErrorMessage(errors.array());
       }
-      throw error;
+      throw new Error(error?.message);
     }
     const subcategoryItem = await subcategoryExists(subcategoryId, userId);
     if (subcategoryItem.subcategory) {
@@ -172,7 +172,7 @@ export const updateSubcategory = async (req, res, next) => {
       throw new Error(subcategoryItem.error);
     }
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err?.message });
   }
 };
 export const deleteSubcategory = async (req, res, next) => {
@@ -189,6 +189,6 @@ export const deleteSubcategory = async (req, res, next) => {
       throw new Error(subcategoryItem.error);
     }
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err?.message });
   }
 };

@@ -1,5 +1,6 @@
 import {
   CATEGORY_NOT_FOUND,
+  GET_CATEGORIES_FAILURE,
   GET_CATEGORY_SUCCESS,
   NOT_AUTHORIZED,
   POST_CATEGORY_ERROR,
@@ -52,18 +53,23 @@ export const getCategory = async (req, res, next) => {
       throw new Error(categoryItem.error);
     }
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 export const getCategories = async (req, res, next) => {
   try {
     const userId = req?.userId;
     const categories = await Category.find({ userId: userId });
-    res
-      .status(200)
-      .json({ message: GET_CATEGORIES_SUCCESS, categories: categories });
+
+    if (categories) {
+      res
+        .status(200)
+        .json({ message: GET_CATEGORIES_SUCCESS, categories: categories });
+    } else {
+      throw new Error(GET_CATEGORIES_FAILURE);
+    }
   } catch (error) {
-    next(error);
+    res.status(500).json({ error: error.message });
   }
 };
 export const addCategory = async (req, res, next) => {
@@ -78,7 +84,7 @@ export const addCategory = async (req, res, next) => {
       if (errors.array()[0].type === "field") {
         error.message = generateFieldValidationErrorMessage(errors.array());
       }
-      throw error;
+      throw new Error(error?.message);
     }
 
     const categoryExists = await Category.findOne({
@@ -108,7 +114,7 @@ export const addCategory = async (req, res, next) => {
       });
     }
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err?.message });
   }
 };
 
@@ -125,7 +131,7 @@ export const updateCategory = async (req, res, next) => {
       if (errors.array()[0].type === "field") {
         error.message = generateFieldValidationErrorMessage(errors.array());
       }
-      throw error;
+      throw new Error(error?.message);
     }
     const categoryItem = await categoryExists(categoryId, userId);
     if (categoryItem.category) {
@@ -141,7 +147,7 @@ export const updateCategory = async (req, res, next) => {
       throw new Error(categoryItem.error);
     }
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err.message });
   }
 };
 export const deleteCategory = async (req, res, next) => {
@@ -157,6 +163,6 @@ export const deleteCategory = async (req, res, next) => {
       throw new Error(categoryItem.error);
     }
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: err.message });
   }
 };
