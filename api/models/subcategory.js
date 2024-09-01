@@ -14,7 +14,7 @@ const subCategorySchema = new Schema(
       ref: "User",
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Subcategory = model("Subcategory", subCategorySchema);

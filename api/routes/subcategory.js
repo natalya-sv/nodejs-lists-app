@@ -2,12 +2,12 @@ import express from "express";
 import { isAuth } from "../../utils.js";
 import { body } from "express-validator";
 import {
-  addSubcategory,
   deleteSubcategory,
   getAllSubcategories,
   getSubcategories,
   getSubcategory,
   updateSubcategory,
+  addSubcategory,
 } from "../controllers/subcategory.js";
 
 export const router = express.Router();
@@ -25,12 +25,13 @@ router.post(
   "/subcategories/:categoryId",
   [body("title").trim().isLength({ min: 3 })],
   isAuth,
-  addSubcategory
+  addSubcategory,
 );
 router.put(
   "/subcategories/:subcategoryId",
   [body("title").trim().isLength({ min: 3 })],
   isAuth,
-  updateSubcategory
+  updateSubcategory,
 );
+
 router.delete("/subcategories/:subcategoryId", isAuth, deleteSubcategory);

@@ -142,7 +142,7 @@ export const updateSubcategoryItem = async (req, res, next) => {
     if (subcategoryItemId) {
       const subcategoryItem = await subcategoryItemExists(
         subcategoryItemId,
-        userId
+        userId,
       );
 
       if (subcategoryItem.subcategoryItem) {
@@ -175,7 +175,7 @@ export const deleteSubcategoryItem = async (req, res, next) => {
     const userId = req.userId;
     const subcategoryItem = await subcategoryItemExists(
       subcategoryItemId,
-      userId
+      userId,
     );
 
     if (subcategoryItem.subcategoryItem) {
