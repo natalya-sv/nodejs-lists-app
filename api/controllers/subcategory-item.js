@@ -142,7 +142,7 @@ export const updateSubcategoryItem = async (req, res, next) => {
     if (subcategoryItemId) {
       const subcategoryItem = await subcategoryItemExists(
         subcategoryItemId,
-        userId
+        userId,
       );
 
       if (subcategoryItem.subcategoryItem) {
@@ -150,9 +150,11 @@ export const updateSubcategoryItem = async (req, res, next) => {
           title ?? subcategoryItem.subcategoryItem.title;
         subcategoryItem.subcategoryItem.description =
           description ?? subcategoryItem.subcategoryItem.description;
-        subcategoryItem.subcategoryItem.isDone = isDone ?? subcategoryItem.subcategoryItem.isDone;
+        subcategoryItem.subcategoryItem.isDone =
+          isDone ?? subcategoryItem.subcategoryItem.isDone;
 
-        const updatedSubcategoryItem = await subcategoryItem.subcategoryItem.save();
+        const updatedSubcategoryItem =
+          await subcategoryItem.subcategoryItem.save();
         res.status(200).json({
           message: PUT_SUBCATEGORY_ITEM_SUCCESS,
           subcategoryItem: updatedSubcategoryItem,
@@ -173,7 +175,7 @@ export const deleteSubcategoryItem = async (req, res, next) => {
     const userId = req.userId;
     const subcategoryItem = await subcategoryItemExists(
       subcategoryItemId,
-      userId
+      userId,
     );
 
     if (subcategoryItem.subcategoryItem) {
