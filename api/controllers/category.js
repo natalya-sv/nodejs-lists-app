@@ -68,7 +68,7 @@ export const getCategories = async (req, res, next) => {
 };
 export const addCategory = async (req, res, next) => {
   try {
-    const { title, icon } = req.body;
+    const { title, icon, color } = req.body;
     const errors = validationResult(req);
     const userId = req.userId;
 
@@ -90,6 +90,7 @@ export const addCategory = async (req, res, next) => {
         title: title,
         icon: icon,
         userId: userId,
+        color: color,
       });
       const result = await newCategory.save();
       if (result) {
@@ -113,7 +114,7 @@ export const addCategory = async (req, res, next) => {
 
 export const updateCategory = async (req, res, next) => {
   try {
-    const { title, icon } = req.body;
+    const { title, icon, color } = req.body;
     const errors = validationResult(req);
     const userId = req.userId;
     const categoryId = req.params.categoryId;
@@ -130,6 +131,7 @@ export const updateCategory = async (req, res, next) => {
     if (categoryItem.category) {
       categoryItem.category.title = title ?? categoryItem.category.title;
       categoryItem.category.icon = icon ?? categoryItem.category.icon;
+      categoryItem.category.color = color ?? categoryItem.category.color;
 
       const updatedCategory = await categoryItem.category.save();
       res
