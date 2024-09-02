@@ -19,7 +19,11 @@ export const createUser = async (req, res, next) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      throw new Error(ENTER_VALID_INPUT);
+      const errorMessage = errors.errors.reduce(
+        (acc, error) => acc + error.msg,
+        "",
+      );
+      throw new Error(errorMessage);
     }
     const { email, username, password } = req.body;
 

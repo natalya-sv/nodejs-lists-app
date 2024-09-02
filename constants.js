@@ -42,4 +42,4 @@ export const POST_SUBCATEGORY_ITEM_TITLE_ERROR =
 
 export const AUTH_NOT_PROVIDED = "No auth header provided";
 export const USER_NOT_AUTH = "Not Authenticated";
-export const ENTER_VALID_INPUT = "Error occured. Enter valid input";
+export const ENTER_VALID_INPUT = "Error occured. Check your input";
