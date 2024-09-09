@@ -5,7 +5,9 @@ import {
   EMAIL_EXISTS,
   ENTER_VALID_EMAIL,
   USER_NOT_FOUND,
-  ENTER_VALID_INPUT, SUBCATEGORY_ITEM_NOT_FOUND, NOT_AUTHORIZED 
+  ENTER_VALID_INPUT,
+  SUBCATEGORY_ITEM_NOT_FOUND,
+  NOT_AUTHORIZED,
 } from "./constants.js";
 import jsonwebtoken from "jsonwebtoken";
 import { User } from "./api/models/user.js";
@@ -76,11 +78,11 @@ export const generateFieldValidationErrorMessage = (validationError) => {
   return errorMessage;
 };
 
-async function createSubcategoryItem(item, userId, subcategoryId) {
+async function createSubcategoryItem(item, userId) {
   const newSubcategoryItem = new SubcategoryItem({
     title: item.title,
     description: item.description ?? "",
-    subcategoryId: subcategoryId,
+    subcategoryId: item.subcategoryId,
     userId: userId,
     isDone: item.isDone ?? false,
   });
@@ -101,15 +103,15 @@ export async function createSubcategoryItems(
   addingItemsResult,
 ) {
   await Promise.all(
-    itemsArray.forEach(async (item) => {
+    itemsArray.map(async (item) => {
       const subcategoryItemExists = await SubcategoryItem.findOne({
-        // TODO it checks through all items, but should check only through the current list
         title: item.title,
         userId,
+        subcategoryId: item.subcategoryId,
       });
 
       if (!subcategoryItemExists) {
-        const result = await createSubcategoryItem(item);
+        const result = await createSubcategoryItem(item, userId);
         const isError = !!result.message;
         isError
           ? addingItemsResult.failed.push(result)
@@ -137,7 +139,7 @@ export function setError(errors) {
 
 export const subcategoryItemExists = async (subcategoryItemId, userId) => {
   const subcategoryItem = await SubcategoryItem.findById(subcategoryItemId);
-  
+
   const subcategoryItemObj = { subcategoryItem: null, error: null };
   if (!subcategoryItem) {
     subcategoryItemObj.error = SUBCATEGORY_ITEM_NOT_FOUND;
@@ -158,7 +160,7 @@ export async function updateSubcategoryItems(
   addingItemsResult,
 ) {
   await Promise.all(
-    itemsArray.forEach(async (item) => {
+    itemsArray.map(async (item) => {
       const subcategoryItemId = item._id;
       const subcategoryItem = await subcategoryItemExists(
         subcategoryItemId,
