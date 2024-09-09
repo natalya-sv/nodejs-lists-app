@@ -9,15 +9,13 @@ import {
   ENTER_VALID_INPUT,
   POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR,
   POST_SUBCATEGORY_ITEM_TITLE_ERROR,
+  USER_NOT_AUTH,
 } from "../../constants.js";
 import { SubcategoryItem } from "../models/subcategoryItem.js";
 import { validationResult } from "express-validator";
 import { generateFieldValidationErrorMessage } from "../../utils.js";
-import { Subcategory } from "../models/subcategory.js";
-import { setError } from "./utils/set-error.js";
-import { createSubcategoryItems } from "./utils/create-subcategory-items.js";
-import { subcategoryItemExists } from "./utils/subcategory-item-exists.js";
-import { updateSubcategoryItems } from "./utils/update-subcategory-items.js";
+import { Subcategory,  } from "../models/subcategory.js";
+import { setError,subcategoryItemExists,createSubcategoryItems, updateSubcategoryItems } from "../../utils.js";
 
 export const getSubcategoryItemsBySubcategoryId = async (req, res) => {
   try {
@@ -124,10 +122,14 @@ export const addSubcategoryItemMany = async (req, res) => {
 
     const hasSubCategory = await Subcategory.findById(subcategoryId);
 
-    const isCurrentUser = hasSubCategory.userId.toString() === userId;
-
-    if (!hasSubCategory || !isCurrentUser) {
+    if (!hasSubCategory) {
       throw new Error(POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR);
+    }
+
+    const isCurrentUser = hasSubCategory.userId.toString() === userId;    
+
+    if (!isCurrentUser) {
+      throw new Error(USER_NOT_AUTH);
     }
 
     const addingItemsResult = {
@@ -215,10 +217,14 @@ export const updateSubcategoryItemMany = async (req, res) => {
 
     const hasSubCategory = await Subcategory.findById(subcategoryId);
 
-    const isCurrentUser = hasSubCategory.userId.toString() === userId;
+    if (!hasSubCategory) {
+      throw new Error(POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR);
+    }
 
-    if (!hasSubCategory || !isCurrentUser) {
-      throw new Error(SUBCATEGORY_ITEM_NOT_FOUND);
+    const isCurrentUser = hasSubCategory.userId.toString() === userId;    
+
+    if (!isCurrentUser) {
+      throw new Error(USER_NOT_AUTH);
     }
 
     const addingItemsResult = {
