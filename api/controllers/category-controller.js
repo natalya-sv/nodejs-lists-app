@@ -1,11 +1,9 @@
 import {
-  CATEGORY_NOT_FOUND,
   GET_CATEGORIES_FAILURE,
   GET_CATEGORY_SUCCESS,
-  NOT_AUTHORIZED,
   POST_CATEGORY_ERROR,
 } from "../../constants.js";
-import { Category } from "../models/category.js";
+import { Category } from "../../src/models/category.js";
 import { validationResult } from "express-validator";
 import {
   DELETE_CATEGORIES_SUCCESS,
@@ -15,29 +13,14 @@ import {
   POST_CATEGORY_TITLE_ERROR,
   PUT_CATEGORIES_SUCCESS,
 } from "../../constants.js";
-import { generateFieldValidationErrorMessage } from "../../utils.js";
-
-const categoryExists = async (categoryId, userId) => {
-  const category = await Category.findById(categoryId);
-  const categoryItem = { category: null, error: null };
-  if (!category) {
-    categoryItem.error = CATEGORY_NOT_FOUND;
-    return categoryItem;
-  }
-  if (category.userId.toString() !== userId) {
-    categoryItem.error = NOT_AUTHORIZED;
-    return categoryItem;
-  }
-  categoryItem.category = category;
-
-  return categoryItem;
-};
+import { generateFieldValidationErrorMessage } from "../../src/utils.js";
+import { categoryExists } from "../../src/helpers/category-helper.js";
 
 export const getTestData = (req, res) => {
   res.status(200).json({ message: "Test message is returned" });
 };
 
-export const getCategory = async (req, res, next) => {
+export const getCategory = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
     const userId = req?.userId;
@@ -56,7 +39,7 @@ export const getCategory = async (req, res, next) => {
     res.status(500).json({ error: error.message });
   }
 };
-export const getCategories = async (req, res, next) => {
+export const getCategories = async (req, res) => {
   try {
     const userId = req?.userId;
     const categories = await Category.find({ userId: userId });
@@ -72,7 +55,7 @@ export const getCategories = async (req, res, next) => {
     res.status(500).json({ error: error.message });
   }
 };
-export const addCategory = async (req, res, next) => {
+export const addCategory = async (req, res) => {
   try {
     const { title, icon, color } = req.body;
     const errors = validationResult(req);
@@ -108,17 +91,14 @@ export const addCategory = async (req, res, next) => {
         throw new Error(POST_CATEGORY_ERROR);
       }
     } else {
-      res.status(500).json({
-        message: POST_CATEGORY_TITLE_ERROR,
-        category: null,
-      });
+      throw new Error(POST_CATEGORY_TITLE_ERROR);
     }
   } catch (err) {
-    res.status(500).json({ error: err?.message });
+    res.status(500).json({ error: err?.message, category: null });
   }
 };
 
-export const updateCategory = async (req, res, next) => {
+export const updateCategory = async (req, res) => {
   try {
     const { title, icon, color } = req.body;
     const errors = validationResult(req);
@@ -150,7 +130,7 @@ export const updateCategory = async (req, res, next) => {
     res.status(500).json({ error: err.message });
   }
 };
-export const deleteCategory = async (req, res, next) => {
+export const deleteCategory = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
     const userId = req.userId;

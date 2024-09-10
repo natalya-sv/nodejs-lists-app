@@ -1,5 +1,5 @@
 import express from "express";
-import { isAuth } from "../../utils.js";
+import { isAuth } from "../helpers/user-helper.js";
 import { body } from "express-validator";
 import {
   deleteSubcategory,
@@ -8,7 +8,7 @@ import {
   getSubcategory,
   updateSubcategory,
   addSubcategory,
-} from "../controllers/subcategory.js";
+} from "../../api/controllers/subcategory-controller.js";
 
 export const router = express.Router();
 
