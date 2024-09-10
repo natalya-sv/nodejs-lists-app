@@ -20,7 +20,7 @@ export const getTestData = (req, res) => {
   res.status(200).json({ message: "Test message is returned" });
 };
 
-export const getCategory = async (req, res, next) => {
+export const getCategory = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
     const userId = req?.userId;
@@ -39,7 +39,7 @@ export const getCategory = async (req, res, next) => {
     res.status(500).json({ error: error.message });
   }
 };
-export const getCategories = async (req, res, next) => {
+export const getCategories = async (req, res) => {
   try {
     const userId = req?.userId;
     const categories = await Category.find({ userId: userId });
@@ -55,7 +55,7 @@ export const getCategories = async (req, res, next) => {
     res.status(500).json({ error: error.message });
   }
 };
-export const addCategory = async (req, res, next) => {
+export const addCategory = async (req, res) => {
   try {
     const { title, icon, color } = req.body;
     const errors = validationResult(req);
@@ -91,17 +91,14 @@ export const addCategory = async (req, res, next) => {
         throw new Error(POST_CATEGORY_ERROR);
       }
     } else {
-      res.status(500).json({
-        message: POST_CATEGORY_TITLE_ERROR,
-        category: null,
-      });
+      throw new Error(POST_CATEGORY_TITLE_ERROR);
     }
   } catch (err) {
-    res.status(500).json({ error: err?.message });
+    res.status(500).json({ error: err?.message, category: null });
   }
 };
 
-export const updateCategory = async (req, res, next) => {
+export const updateCategory = async (req, res) => {
   try {
     const { title, icon, color } = req.body;
     const errors = validationResult(req);
@@ -133,7 +130,7 @@ export const updateCategory = async (req, res, next) => {
     res.status(500).json({ error: err.message });
   }
 };
-export const deleteCategory = async (req, res, next) => {
+export const deleteCategory = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
     const userId = req.userId;

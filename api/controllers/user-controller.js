@@ -14,7 +14,7 @@ dotenv.config();
 
 const secret = process.env.SECRET_JWT;
 
-export const createUser = async (req, res, next) => {
+export const createUser = async (req, res) => {
   try {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
