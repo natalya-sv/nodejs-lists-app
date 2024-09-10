@@ -2,10 +2,10 @@ import express from "express";
 import bodyParser from "body-parser";
 import { connect } from "mongoose";
 import dotenv from "dotenv";
-import { router as categoriesRouter } from "./routes/category-routes.js";
-import { router as subcategoryRouter } from "./routes/subcategory-routes.js";
-import { router as subcategoryItemsRouter } from "./routes/subcategory-item-routes.js";
-import { router as userRouter } from "./routes/user-routes.js";
+import { router as categoriesRouter } from "../src/routes/category-routes.js";
+import { router as subcategoryRouter } from "../src/routes/subcategory-routes.js";
+import { router as subcategoryItemsRouter } from "../src/routes/subcategory-item-routes.js";
+import { router as userRouter } from "../src/routes/user-routes.js";
 
 import cors from "cors";
 dotenv.config();

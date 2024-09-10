@@ -2,8 +2,8 @@ import {
   ENTER_VALID_INPUT,
   SUBCATEGORY_ITEM_NOT_FOUND,
   NOT_AUTHORIZED,
-} from "./constants.js";
-import { SubcategoryItem } from "./api/models/subcategoryItem.js";
+} from "../../constants.js";
+import { SubcategoryItem } from "../models/subcategoryItem.js";
 import { generateFieldValidationErrorMessage } from "../utils.js";
 
 async function createSubcategoryItem(item, userId, subcategoryId) {

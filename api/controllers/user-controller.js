@@ -1,10 +1,9 @@
 import bcrypt from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import { validationResult } from "express-validator";
-import { User } from "../models/user.js";
+import { User } from "../../src/models/user.js";
 import dotenv from "dotenv";
 import {
-  ENTER_VALID_INPUT,
   PASSWORD_RULES,
   PASSWORD_WPONG,
   POST_USER_SUCCESS,

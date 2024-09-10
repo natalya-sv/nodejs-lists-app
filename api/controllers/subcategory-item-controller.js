@@ -11,12 +11,16 @@ import {
   POST_SUBCATEGORY_ITEM_TITLE_ERROR,
   USER_NOT_AUTH,
 } from "../../constants.js";
-import { SubcategoryItem } from "../models/subcategoryItem.js";
+import { SubcategoryItem } from "../../src/models/subcategoryItem.js";
 import { validationResult } from "express-validator";
-import { generateFieldValidationErrorMessage } from "../../utils.js";
-import { Subcategory,  } from "../models/subcategory.js";
-import { setError,subcategoryItemExists,createSubcategoryItems, updateSubcategoryItems } from "../../utils.js";
-
+import { generateFieldValidationErrorMessage } from "../../src/utils.js";
+import { Subcategory } from "../../src/models/subcategory.js";
+import {
+  setError,
+  subcategoryItemExists,
+  createSubcategoryItems,
+  updateSubcategoryItems,
+} from "../../src/helpers/subcategory-item-helper.js";
 export const getSubcategoryItemsBySubcategoryId = async (req, res) => {
   try {
     const subcategoryId = req.params.subcategoryId;
@@ -126,7 +130,7 @@ export const addSubcategoryItemMany = async (req, res) => {
       throw new Error(POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR);
     }
 
-    const isCurrentUser = hasSubCategory.userId.toString() === userId;    
+    const isCurrentUser = hasSubCategory.userId.toString() === userId;
 
     if (!isCurrentUser) {
       throw new Error(USER_NOT_AUTH);
@@ -172,7 +176,7 @@ export const updateSubcategoryItem = async (req, res) => {
       }
       throw new Error(error?.message);
     }
-    
+
     if (subcategoryItemId) {
       const subcategoryItem = await subcategoryItemExists(
         subcategoryItemId,
@@ -221,7 +225,7 @@ export const updateSubcategoryItemMany = async (req, res) => {
       throw new Error(POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR);
     }
 
-    const isCurrentUser = hasSubCategory.userId.toString() === userId;    
+    const isCurrentUser = hasSubCategory.userId.toString() === userId;
 
     if (!isCurrentUser) {
       throw new Error(USER_NOT_AUTH);

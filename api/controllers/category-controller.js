@@ -3,7 +3,7 @@ import {
   GET_CATEGORY_SUCCESS,
   POST_CATEGORY_ERROR,
 } from "../../constants.js";
-import { Category } from "../models/category.js";
+import { Category } from "../../src/models/category.js";
 import { validationResult } from "express-validator";
 import {
   DELETE_CATEGORIES_SUCCESS,
@@ -13,8 +13,8 @@ import {
   POST_CATEGORY_TITLE_ERROR,
   PUT_CATEGORIES_SUCCESS,
 } from "../../constants.js";
-import { generateFieldValidationErrorMessage } from "../../utils.js";
-import { categoryExists } from "../../helpers/category-helper.js";
+import { generateFieldValidationErrorMessage } from "../../src/utils.js";
+import { categoryExists } from "../../src/helpers/category-helper.js";
 
 export const getTestData = (req, res) => {
   res.status(200).json({ message: "Test message is returned" });

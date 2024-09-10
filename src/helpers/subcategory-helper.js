@@ -1,5 +1,5 @@
-import { Subcategory } from "../api/models/subcategory";
-import { NOT_AUTHORIZED, SUBCATEGORIES_NOT_FOUND } from "../constants";
+import { Subcategory } from "../models/subcategory.js";
+import { NOT_AUTHORIZED, SUBCATEGORIES_NOT_FOUND } from "../../constants.js";
 
 export const subcategoryExists = async (subcategoryId, userId) => {
   const subcategory = await Subcategory.findById(subcategoryId);

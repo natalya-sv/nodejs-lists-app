@@ -1,4 +1,4 @@
-import { ENTER_VALID_INPUT } from "./constants";
+import { ENTER_VALID_INPUT } from "../constants.js";
 
 export const generateFieldValidationErrorMessage = (validationError) => {
   let errorMessage = "";

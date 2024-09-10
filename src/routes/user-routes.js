@@ -1,8 +1,8 @@
 import dotenv from "dotenv";
-import { EMAIL_EXISTS, ENTER_VALID_EMAIL } from "./constants.js";
-import { User } from "../api/models/user.js";
+import { EMAIL_EXISTS, ENTER_VALID_EMAIL } from "../../constants.js";
+import { User } from "../models/user.js";
 import express from "express";
-import { createUser, login } from "../api/controllers/user.js";
+import { createUser, login } from "../../api/controllers/user-controller.js";
 import { body } from "express-validator";
 
 export const router = express.Router();

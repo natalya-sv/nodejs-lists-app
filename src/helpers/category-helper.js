@@ -1,5 +1,5 @@
-import { Category } from "../api/models/category";
-import { CATEGORY_NOT_FOUND, NOT_AUTHORIZED } from "../constants";
+import { Category } from "../models/category.js";
+import { CATEGORY_NOT_FOUND, NOT_AUTHORIZED } from "../../constants.js";
 
 export const categoryExists = async (categoryId, userId) => {
   const category = await Category.findById(categoryId);

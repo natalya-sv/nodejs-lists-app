@@ -1,23 +1,20 @@
-import { Subcategory } from "../models/subcategory.js";
+import { Subcategory } from "../../src/models/subcategory.js";
 import { validationResult } from "express-validator";
-import { generateFieldValidationErrorMessage } from "../../utils.js";
+import { generateFieldValidationErrorMessage } from "../../src/utils.js";
 import {
   DELETE_SUBCATEGORIES_SUCCESS,
   ENTER_VALID_INPUT,
   GET_SUBCATEGORIES_SUCCESS,
   GET_SUBCATEGORY_SUCCESS,
-  NOT_AUTHORIZED,
   POST_SUBCATEGORIES_SUCCESS,
   POST_SUBCATEGORY_ERROR,
-  POST_SUBCATEGORY_NOT_FOUND_ERROR,
   POST_SUBCATEGORY_TITLE_ERROR,
   PUT_SUBCATEGORIES_SUCCESS,
   SUBCATEGORIES_NOT_FOUND,
-  SUBCATEGORY_NOT_FOUND,
   USER_NOT_FOUND,
 } from "../../constants.js";
-import { Category } from "../models/category.js";
-import { subcategoryExists } from "../../helpers/subcategory-helper.js";
+import { Category } from "../../src/models/category.js";
+import { subcategoryExists } from "../../src/helpers/subcategory-helper.js";
 
 export const getSubcategory = async (req, res, next) => {
   try {

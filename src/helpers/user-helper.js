@@ -2,9 +2,12 @@ import {
   AUTH_NOT_PROVIDED,
   USER_NOT_AUTH,
   USER_NOT_FOUND,
-} from "./constants.js";
+} from "../../constants.js";
 import jsonwebtoken from "jsonwebtoken";
-import { User } from "./api/models/user.js";
+import { User } from "../models/user.js";
+import dotenv from "dotenv";
+dotenv.config();
+
 const secret = process.env.SECRET_JWT;
 
 export const isAuth = async (req, res, next) => {
