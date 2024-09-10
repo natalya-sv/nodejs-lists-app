@@ -14,8 +14,13 @@ import {
 import { SubcategoryItem } from "../models/subcategoryItem.js";
 import { validationResult } from "express-validator";
 import { generateFieldValidationErrorMessage } from "../../utils.js";
-import { Subcategory,  } from "../models/subcategory.js";
-import { setError,subcategoryItemExists,createSubcategoryItems, updateSubcategoryItems } from "../../utils.js";
+import { Subcategory } from "../models/subcategory.js";
+import {
+  setError,
+  subcategoryItemExists,
+  createSubcategoryItems,
+  updateSubcategoryItems,
+} from "../../utils.js";
 
 export const getSubcategoryItemsBySubcategoryId = async (req, res) => {
   try {
@@ -69,13 +74,17 @@ export const addSubcategoryItem = async (req, res) => {
       }
       throw new Error(error?.message);
     }
+
     if (subcategoryId) {
       const hasSubCategory = await Subcategory.findById(subcategoryId);
+
       if (hasSubCategory && hasSubCategory.userId.toString() === userId) {
         const subcategoryItemExists = await SubcategoryItem.findOne({
-          title: title,
-          userId: userId,
+          title,
+          userId,
+          subcategoryId,
         });
+
         if (!subcategoryItemExists) {
           const newSubcategoryItem = new SubcategoryItem({
             title: title,
@@ -126,7 +135,7 @@ export const addSubcategoryItemMany = async (req, res) => {
       throw new Error(POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR);
     }
 
-    const isCurrentUser = hasSubCategory.userId.toString() === userId;    
+    const isCurrentUser = hasSubCategory.userId.toString() === userId;
 
     if (!isCurrentUser) {
       throw new Error(USER_NOT_AUTH);
@@ -172,7 +181,7 @@ export const updateSubcategoryItem = async (req, res) => {
       }
       throw new Error(error?.message);
     }
-    
+
     if (subcategoryItemId) {
       const subcategoryItem = await subcategoryItemExists(
         subcategoryItemId,
@@ -221,7 +230,7 @@ export const updateSubcategoryItemMany = async (req, res) => {
       throw new Error(POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR);
     }
 
-    const isCurrentUser = hasSubCategory.userId.toString() === userId;    
+    const isCurrentUser = hasSubCategory.userId.toString() === userId;
 
     if (!isCurrentUser) {
       throw new Error(USER_NOT_AUTH);
