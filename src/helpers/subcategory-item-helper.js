@@ -6,11 +6,11 @@ import {
 import { SubcategoryItem } from "../models/subcategoryItem.js";
 import { generateFieldValidationErrorMessage } from "../utils.js";
 
-async function createSubcategoryItem(item, userId, subcategoryId) {
+async function createSubcategoryItem(item, userId) {
   const newSubcategoryItem = new SubcategoryItem({
     title: item.title,
     description: item.description ?? "",
-    subcategoryId: subcategoryId,
+    subcategoryId: item.subcategoryId,
     userId: userId,
     isDone: item.isDone ?? false,
   });
@@ -31,15 +31,16 @@ export async function createSubcategoryItems(
   addingItemsResult,
 ) {
   await Promise.all(
-    itemsArray.forEach(async (item) => {
+    itemsArray.map(async (item) => {
       const subcategoryItemExists = await SubcategoryItem.findOne({
         // TODO it checks through all items, but should check only through the current list
         title: item.title,
         userId,
+        subcategoryId: item.subcategoryId,
       });
 
       if (!subcategoryItemExists) {
-        const result = await createSubcategoryItem(item);
+        const result = await createSubcategoryItem(item, userId);
         const isError = !!result.message;
         isError
           ? addingItemsResult.failed.push(result)
@@ -88,7 +89,7 @@ export async function updateSubcategoryItems(
   addingItemsResult,
 ) {
   await Promise.all(
-    itemsArray.forEach(async (item) => {
+    itemsArray.map(async (item) => {
       const subcategoryItemId = item._id;
       const subcategoryItem = await subcategoryItemExists(
         subcategoryItemId,

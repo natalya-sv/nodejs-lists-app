@@ -79,6 +79,7 @@ export const addSubcategoryItem = async (req, res) => {
         const subcategoryItemExists = await SubcategoryItem.findOne({
           title: title,
           userId: userId,
+          subcategoryId,
         });
         if (!subcategoryItemExists) {
           const newSubcategoryItem = new SubcategoryItem({
