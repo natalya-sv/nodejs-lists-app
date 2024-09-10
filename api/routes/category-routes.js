@@ -6,8 +6,8 @@ import {
   updateCategory,
   getTestData,
   getCategory,
-} from "../controllers/category.js";
-import { isAuth } from "../../utils.js";
+} from "../controllers/category-controller.js";
+import { isAuth } from "../../helpers/user-helper.js";
 import { body } from "express-validator";
 
 export const router = express.Router();

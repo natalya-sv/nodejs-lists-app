@@ -14,25 +14,11 @@ import {
   PUT_SUBCATEGORIES_SUCCESS,
   SUBCATEGORIES_NOT_FOUND,
   SUBCATEGORY_NOT_FOUND,
+  USER_NOT_FOUND,
 } from "../../constants.js";
 import { Category } from "../models/category.js";
+import { subcategoryExists } from "../../helpers/subcategory-helper.js";
 
-const subcategoryExists = async (subcategoryId, userId) => {
-  const subcategory = await Subcategory.findById(subcategoryId);
-  const subcategoryItem = { subcategory: null, error: null };
-
-  if (!subcategory) {
-    subcategoryItem.error = SUBCATEGORY_NOT_FOUND;
-    return subcategoryItem;
-  }
-
-  if (subcategory.userId.toString() !== userId) {
-    subcategoryItem.error = NOT_AUTHORIZED;
-    return subcategoryItem;
-  }
-  subcategoryItem.subcategory = subcategory;
-  return subcategoryItem;
-};
 export const getSubcategory = async (req, res, next) => {
   try {
     const subcategoryId = req.params.subcategoryId;

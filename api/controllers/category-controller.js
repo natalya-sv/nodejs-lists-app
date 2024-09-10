@@ -1,8 +1,6 @@
 import {
-  CATEGORY_NOT_FOUND,
   GET_CATEGORIES_FAILURE,
   GET_CATEGORY_SUCCESS,
-  NOT_AUTHORIZED,
   POST_CATEGORY_ERROR,
 } from "../../constants.js";
 import { Category } from "../models/category.js";
@@ -16,22 +14,7 @@ import {
   PUT_CATEGORIES_SUCCESS,
 } from "../../constants.js";
 import { generateFieldValidationErrorMessage } from "../../utils.js";
-
-const categoryExists = async (categoryId, userId) => {
-  const category = await Category.findById(categoryId);
-  const categoryItem = { category: null, error: null };
-  if (!category) {
-    categoryItem.error = CATEGORY_NOT_FOUND;
-    return categoryItem;
-  }
-  if (category.userId.toString() !== userId) {
-    categoryItem.error = NOT_AUTHORIZED;
-    return categoryItem;
-  }
-  categoryItem.category = category;
-
-  return categoryItem;
-};
+import { categoryExists } from "../../helpers/category-helper.js";
 
 export const getTestData = (req, res) => {
   res.status(200).json({ message: "Test message is returned" });
