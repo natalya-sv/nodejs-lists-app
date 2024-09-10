@@ -33,7 +33,6 @@ export async function createSubcategoryItems(
   await Promise.all(
     itemsArray.map(async (item) => {
       const subcategoryItemExists = await SubcategoryItem.findOne({
-        // TODO it checks through all items, but should check only through the current list
         title: item.title,
         userId,
         subcategoryId: item.subcategoryId,
