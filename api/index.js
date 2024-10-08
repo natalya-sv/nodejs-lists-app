@@ -30,7 +30,7 @@ app.use((error, req, res) => {
   const status = 500;
   const message = error.message;
   const data = error;
-  console.log("error", error);
+  console.log("error:", error);
   res.status(status).json({ message: message, data: data });
 });
 
