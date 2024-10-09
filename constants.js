@@ -1,3 +1,4 @@
+export const SOMETHING_WENT_WRONG = "Something went wrong";
 export const POST_USER_SUCCESS = "User account created";
 export const NOT_AUTHORIZED = "You are not authorized";
 export const ENTER_VALID_EMAIL = "Please enter valid email";
