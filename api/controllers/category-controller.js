@@ -2,18 +2,18 @@ import {
   GET_CATEGORIES_FAILURE,
   GET_CATEGORY_SUCCESS,
   POST_CATEGORY_ERROR,
+  SOMETHING_WENT_WRONG,
 } from "../../constants.js";
 import { Category } from "../../src/models/category.js";
 import { validationResult } from "express-validator";
 import {
   DELETE_CATEGORIES_SUCCESS,
-  ENTER_VALID_INPUT,
   GET_CATEGORIES_SUCCESS,
   POST_CATEGORIES_SUCCESS,
   POST_CATEGORY_TITLE_ERROR,
   PUT_CATEGORIES_SUCCESS,
 } from "../../constants.js";
-import { generateFieldValidationErrorMessage } from "../../src/utils.js";
+import { setError } from "../../src/utils.js";
 import { categoryExists } from "../../src/helpers/category-helper.js";
 
 export const getTestData = (req, res) => {
@@ -31,12 +31,17 @@ export const getCategory = async (req, res) => {
       res.status(200).json({
         message: GET_CATEGORY_SUCCESS,
         category: categoryItem.category,
+        error: null,
       });
     } else {
       throw new Error(categoryItem.error);
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      message: SOMETHING_WENT_WRONG,
+      category: null,
+      error: error.message,
+    });
   }
 };
 export const getCategories = async (req, res) => {
@@ -45,30 +50,30 @@ export const getCategories = async (req, res) => {
     const categories = await Category.find({ userId: userId });
 
     if (categories) {
-      res
-        .status(200)
-        .json({ message: GET_CATEGORIES_SUCCESS, categories: categories });
+      res.status(200).json({
+        message: GET_CATEGORIES_SUCCESS,
+        categories: categories,
+        error: null,
+      });
     } else {
       throw new Error(GET_CATEGORIES_FAILURE);
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({
+      message: SOMETHING_WENT_WRONG,
+      categories: [],
+      error: error.message,
+    });
   }
 };
 export const addCategory = async (req, res) => {
+  let category = null;
   try {
     const { title, icon, color } = req.body;
     const errors = validationResult(req);
     const userId = req.userId;
 
-    if (!errors.isEmpty()) {
-      const error = new Error(ENTER_VALID_INPUT);
-
-      if (errors.array()[0].type === "field") {
-        error.message = generateFieldValidationErrorMessage(errors.array());
-      }
-      throw new Error(error?.message);
-    }
+    setError(errors);
 
     const categoryExists = await Category.findOne({
       title: title,
@@ -83,9 +88,11 @@ export const addCategory = async (req, res) => {
       });
       const result = await newCategory.save();
       if (result) {
+        category = newCategory;
         res.status(201).json({
           message: POST_CATEGORIES_SUCCESS,
           category: newCategory,
+          error: null,
         });
       } else {
         throw new Error(POST_CATEGORY_ERROR);
@@ -94,55 +101,70 @@ export const addCategory = async (req, res) => {
       throw new Error(POST_CATEGORY_TITLE_ERROR);
     }
   } catch (err) {
-    res.status(500).json({ error: err?.message, category: null });
+    res.status(500).json({
+      message: SOMETHING_WENT_WRONG,
+      category: category,
+      error: err?.message,
+    });
   }
 };
 
 export const updateCategory = async (req, res) => {
+  let category = null;
   try {
     const { title, icon, color } = req.body;
     const errors = validationResult(req);
+    setError(errors);
     const userId = req.userId;
     const categoryId = req.params.categoryId;
 
-    if (!errors.isEmpty()) {
-      const error = new Error(ENTER_VALID_INPUT);
-
-      if (errors.array()[0].type === "field") {
-        error.message = generateFieldValidationErrorMessage(errors.array());
-      }
-      throw new Error(error?.message);
-    }
     const categoryItem = await categoryExists(categoryId, userId);
     if (categoryItem.category) {
       categoryItem.category.title = title ?? categoryItem.category.title;
       categoryItem.category.icon = icon ?? categoryItem.category.icon;
       categoryItem.category.color = color ?? categoryItem.category.color;
+      category = categoryItem.category;
 
       const updatedCategory = await categoryItem.category.save();
-      res
-        .status(200)
-        .json({ message: PUT_CATEGORIES_SUCCESS, category: updatedCategory });
+      res.status(200).json({
+        message: PUT_CATEGORIES_SUCCESS,
+        category: updatedCategory,
+        error: null,
+      });
     } else {
       throw new Error(categoryItem.error);
     }
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      message: SOMETHING_WENT_WRONG,
+      category: category,
+      error: err.message,
+    });
   }
 };
 export const deleteCategory = async (req, res) => {
+  let category = null;
   try {
     const categoryId = req.params.categoryId;
     const userId = req.userId;
     const categoryItem = await categoryExists(categoryId, userId);
 
     if (categoryItem.category) {
+      category = categoryItem.category;
       await Category.findByIdAndRemove(categoryId);
-      res.status(200).json({ message: DELETE_CATEGORIES_SUCCESS });
+      res.status(200).json({
+        message: DELETE_CATEGORIES_SUCCESS,
+        error: null,
+        category: category,
+      });
     } else {
       throw new Error(categoryItem.error);
     }
   } catch (err) {
-    res.status(500).json({ error: err.message });
+    res.status(500).json({
+      message: SOMETHING_WENT_WRONG,
+      category: category,
+      error: err.message,
+    });
   }
 };

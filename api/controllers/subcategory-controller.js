@@ -1,22 +1,23 @@
 import { Subcategory } from "../../src/models/subcategory.js";
 import { validationResult } from "express-validator";
-import { generateFieldValidationErrorMessage } from "../../src/utils.js";
+import { setError } from "../../src/utils.js";
 import {
   DELETE_SUBCATEGORIES_SUCCESS,
-  ENTER_VALID_INPUT,
   GET_SUBCATEGORIES_SUCCESS,
   GET_SUBCATEGORY_SUCCESS,
   POST_SUBCATEGORIES_SUCCESS,
   POST_SUBCATEGORY_ERROR,
   POST_SUBCATEGORY_TITLE_ERROR,
   PUT_SUBCATEGORIES_SUCCESS,
+  SOMETHING_WENT_WRONG,
   SUBCATEGORIES_NOT_FOUND,
   USER_NOT_FOUND,
 } from "../../constants.js";
 import { Category } from "../../src/models/category.js";
 import { subcategoryExists } from "../../src/helpers/subcategory-helper.js";
 
-export const getSubcategory = async (req, res, next) => {
+export const getSubcategory = async (req, res) => {
+  let subcategory = null;
   try {
     const subcategoryId = req.params.subcategoryId;
     const userId = req.userId;
@@ -24,9 +25,11 @@ export const getSubcategory = async (req, res, next) => {
       const subcategoryItem = await subcategoryExists(subcategoryId, userId);
 
       if (subcategoryItem.subcategory) {
+        subcategory = subcategoryItem.subcategory;
         res.status(200).json({
           message: GET_SUBCATEGORY_SUCCESS,
           subcategory: subcategoryItem.subcategory,
+          error: null,
         });
       } else {
         throw new Error(subcategoryItem.error);
@@ -35,10 +38,14 @@ export const getSubcategory = async (req, res, next) => {
       throw new Error(USER_NOT_FOUND);
     }
   } catch (error) {
-    res.status(500).json({ error: error?.message });
+    res.status(500).json({
+      message: SOMETHING_WENT_WRONG,
+      subcategory: subcategory,
+      error: error?.message,
+    });
   }
 };
-export const getAllSubcategories = async (req, res, next) => {
+export const getAllSubcategories = async (req, res) => {
   try {
     const userId = req.userId;
     const subcategories = await Subcategory.find({
@@ -48,12 +55,17 @@ export const getAllSubcategories = async (req, res, next) => {
     res.status(200).json({
       message: GET_SUBCATEGORIES_SUCCESS,
       subcategories: subcategories,
+      error: null,
     });
   } catch (error) {
-    res.status(500).json({ error: error?.message });
+    res.status(500).json({
+      message: SOMETHING_WENT_WRONG,
+      subcategories: [],
+      error: error?.message,
+    });
   }
 };
-export const getSubcategories = async (req, res, next) => {
+export const getSubcategories = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
     const userId = req.userId;
@@ -66,28 +78,28 @@ export const getSubcategories = async (req, res, next) => {
       res.status(200).json({
         message: GET_SUBCATEGORIES_SUCCESS,
         subcategories: subcategories,
+        error: null,
       });
     } else {
       throw new Error(SUBCATEGORIES_NOT_FOUND);
     }
   } catch (error) {
-    res.status(500).json({ error: error?.message });
+    res.status(500).json({
+      message: SOMETHING_WENT_WRONG,
+      subcategories: [],
+      error: error?.message,
+    });
   }
 };
-export const addSubcategory = async (req, res, next) => {
+export const addSubcategory = async (req, res) => {
+  let subcategory = null;
   try {
     const { title } = req.body;
     const errors = validationResult(req);
+    setError(errors);
     const userId = req.userId;
     const categoryId = req.params.categoryId;
-    if (!errors.isEmpty()) {
-      const error = new Error(ENTER_VALID_INPUT);
 
-      if (errors.array()[0].type === "field") {
-        error.message = generateFieldValidationErrorMessage(errors.array());
-      }
-      throw new Error(error?.message);
-    }
     if (categoryId) {
       const hasCategory = await Category.findById(categoryId);
       if (hasCategory && hasCategory.userId.toString() === userId) {
@@ -102,63 +114,67 @@ export const addSubcategory = async (req, res, next) => {
             categoryId: categoryId,
             userId: userId,
           });
+          subcategory = newSubcategory;
           const result = await newSubcategory.save();
           if (result) {
             res.status(201).json({
               message: POST_SUBCATEGORIES_SUCCESS,
               subcategory: newSubcategory,
+              error: null,
             });
           } else {
             throw new Error(POST_SUBCATEGORY_ERROR);
           }
         } else {
-          res.status(500).json({
-            message: POST_SUBCATEGORY_TITLE_ERROR,
-            subcategory: null,
-          });
+          throw new Error(POST_SUBCATEGORY_TITLE_ERROR);
         }
       } else {
-        res.status(500).json({ error: err?.message });
+        throw new Error(POST_SUBCATEGORY_ERROR);
       }
     }
   } catch (err) {
-    next(err);
+    res.status(500).json({
+      message: SOMETHING_WENT_WRONG,
+      subcategory: subcategory,
+      error: err.message,
+    });
   }
 };
 
-export const updateSubcategory = async (req, res, next) => {
+export const updateSubcategory = async (req, res) => {
+  let subcategory = null;
+
   try {
     const subcategoryId = req.params.subcategoryId;
     const { title } = req.body;
     const errors = validationResult(req);
+    setError(errors);
     const userId = req.userId;
 
-    if (!errors.isEmpty()) {
-      const error = new Error(ENTER_VALID_INPUT);
-
-      if (errors.array()[0].type === "field") {
-        error.message = generateFieldValidationErrorMessage(errors.array());
-      }
-      throw new Error(error?.message);
-    }
     const subcategoryItem = await subcategoryExists(subcategoryId, userId);
     if (subcategoryItem.subcategory) {
       subcategoryItem.subcategory.title =
         title ?? subcategoryItem.subcategory.title;
-
+      subcategory = subcategoryItem.subcategory;
       const updatedSubcategory = await subcategoryItem.subcategory.save();
       res.status(200).json({
         message: PUT_SUBCATEGORIES_SUCCESS,
         subcategory: updatedSubcategory,
+        error: null,
       });
     } else {
       throw new Error(subcategoryItem.error);
     }
   } catch (err) {
-    res.status(500).json({ error: err?.message });
+    res.status(500).json({
+      message: SOMETHING_WENT_WRONG,
+      subcategory: subcategory,
+      error: err?.message,
+    });
   }
 };
-export const deleteSubcategory = async (req, res, next) => {
+export const deleteSubcategory = async (req, res) => {
+  let subcategory = null;
   try {
     const subcategoryId = req.params.subcategoryId;
     const userId = req.userId;
@@ -166,12 +182,21 @@ export const deleteSubcategory = async (req, res, next) => {
     const subcategoryItem = await subcategoryExists(subcategoryId, userId);
 
     if (subcategoryItem.subcategory) {
+      subcategory = subcategoryItem.subcategory;
       await Subcategory.findByIdAndRemove(subcategoryId);
-      res.status(200).json({ message: DELETE_SUBCATEGORIES_SUCCESS });
+      res.status(200).json({
+        message: DELETE_SUBCATEGORIES_SUCCESS,
+        subcategory: subcategory,
+        error: null,
+      });
     } else {
       throw new Error(subcategoryItem.error);
     }
   } catch (err) {
-    res.status(500).json({ error: err?.message });
+    res.status(500).json({
+      message: SOMETHING_WENT_WRONG,
+      subcategory: subcategory,
+      error: err?.message,
+    });
   }
 };

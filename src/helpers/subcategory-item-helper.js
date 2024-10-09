@@ -54,17 +54,6 @@ export async function createSubcategoryItems(
   );
 }
 
-export function setError(errors) {
-  if (!errors.isEmpty()) {
-    const error = new Error(ENTER_VALID_INPUT);
-
-    if (errors.array()[0].type === "field") {
-      error.message = generateFieldValidationErrorMessage(errors.array());
-    }
-    throw new Error(error?.message);
-  }
-}
-
 export const subcategoryItemExists = async (subcategoryItemId, userId) => {
   const subcategoryItem = await SubcategoryItem.findById(subcategoryItemId);
 

@@ -1,5 +1,6 @@
 import {
   AUTH_NOT_PROVIDED,
+  SOMETHING_WENT_WRONG,
   USER_NOT_AUTH,
   USER_NOT_FOUND,
 } from "../../constants.js";
@@ -20,8 +21,7 @@ export const isAuth = async (req, res, next) => {
     const decodedToken = jsonwebtoken.verify(token, secret);
 
     if (!decodedToken) {
-      const error = new Error(USER_NOT_AUTH);
-      throw error;
+      throw new Error(USER_NOT_AUTH);
     }
     const user = await User.findById(decodedToken.userId);
     if (!user) {
@@ -30,6 +30,6 @@ export const isAuth = async (req, res, next) => {
     req.userId = decodedToken.userId;
     next();
   } catch (err) {
-    res.status(500).json({ error: err });
+    res.status(500).json({ message: SOMETHING_WENT_WRONG, error: err });
   }
 };
