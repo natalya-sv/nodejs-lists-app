@@ -34,16 +34,16 @@ export const getSubcategoryItemsBySubcategoryId = async (req, res) => {
       res.status(200).json({
         message: GET_SUBCATEGORY_ITEMS_SUCCESS,
         subcategoryItems: items,
-        error: null,
+        error: false,
       });
     } else {
       throw new Error(USER_NOT_FOUND);
     }
   } catch (error) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: error.message,
       subcategoryItems: [],
-      error: error?.message,
+      error: true,
     });
   }
 };
@@ -59,16 +59,16 @@ export const getAllSubcategoryItems = async (req, res) => {
       res.status(200).json({
         message: GET_SUBCATEGORY_ITEMS_SUCCESS,
         subcategoryItems: items,
-        error: null,
+        error: false,
       });
     } else {
       throw new Error(SOMETHING_WENT_WRONG);
     }
   } catch (error) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: error.message,
       subcategoryItems: [],
-      error: error?.message,
+      error: true,
     });
   }
 };
@@ -105,7 +105,7 @@ export const addSubcategoryItem = async (req, res) => {
             res.status(201).json({
               message: POST_SUBCATEGORY_ITEM_SUCCESS,
               subcategoryItem: newSubcategoryItem,
-              error: null,
+              error: false,
             });
           } else {
             throw new Error(POST_SUBCATEGORY_ITEM_ERROR);
@@ -121,9 +121,9 @@ export const addSubcategoryItem = async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: err.message,
       subcategoryItem: subcategoryItem,
-      error: err?.message,
+      error: true,
     });
   }
 };
@@ -163,21 +163,21 @@ export const addSubcategoryItemMany = async (req, res) => {
       res.status(201).json({
         message: POST_SUBCATEGORY_ITEM_SUCCESS,
         subcategoryItems: addingItemsResult.success,
-        error: null,
+        error: false,
       });
     } else {
       res.status(500).json({
         message: "Some items were not added",
         subcategoryItems: addingItemsResult.success,
         subcategoryItemsFailed: addingItemsResult.failed,
-        error: "Some items were not added",
+        error: true,
       });
     }
   } catch (err) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: err.message,
       subcategoryItems: [],
-      error: err?.message,
+      error: true,
     });
   }
 };
@@ -211,7 +211,7 @@ export const updateSubcategoryItem = async (req, res) => {
         res.status(200).json({
           message: PUT_SUBCATEGORY_ITEM_SUCCESS,
           subcategoryItem: updatedSubcategoryItem,
-          error: null,
+          error: false,
         });
       } else {
         throw new Error(subcategoryItem.error);
@@ -221,9 +221,9 @@ export const updateSubcategoryItem = async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: err?.message,
       subcategoryItem: subcategoryItemR,
-      error: err?.message,
+      error: true,
     });
   }
 };
@@ -263,7 +263,7 @@ export const updateSubcategoryItemMany = async (req, res) => {
       res.status(201).json({
         message: PUT_SUBCATEGORY_ITEM_SUCCESS,
         subcategoryItems: addingItemsResult.success,
-        error: null,
+        error: false,
       });
     } else {
       res.status(500).json({
@@ -274,9 +274,9 @@ export const updateSubcategoryItemMany = async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: err?.message,
       subcategoryItems: [],
-      error: err?.message,
+      error: true,
     });
   }
 };
@@ -297,16 +297,16 @@ export const deleteSubcategoryItem = async (req, res) => {
       res.status(200).json({
         message: DELETE_SUBCATEGORY_ITEM_SUCCESS,
         subcategoryItem: subcategoryItemR,
-        error: null,
+        error: false,
       });
     } else {
       throw new Error(subcategoryItem.error);
     }
   } catch (err) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: err?.message,
       subcategoryItem: subcategoryItemR,
-      error: err?.message,
+      error: true,
     });
   }
 };
