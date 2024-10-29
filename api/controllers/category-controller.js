@@ -2,7 +2,6 @@ import {
   GET_CATEGORIES_FAILURE,
   GET_CATEGORY_SUCCESS,
   POST_CATEGORY_ERROR,
-  SOMETHING_WENT_WRONG,
 } from "../../constants.js";
 import { Category } from "../../src/models/category.js";
 import { validationResult } from "express-validator";
@@ -31,16 +30,16 @@ export const getCategory = async (req, res) => {
       res.status(200).json({
         message: GET_CATEGORY_SUCCESS,
         category: categoryItem.category,
-        error: null,
+        error: false,
       });
     } else {
       throw new Error(categoryItem.error);
     }
   } catch (error) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: error.message,
       category: null,
-      error: error.message,
+      error: true,
     });
   }
 };
@@ -53,16 +52,16 @@ export const getCategories = async (req, res) => {
       res.status(200).json({
         message: GET_CATEGORIES_SUCCESS,
         categories: categories,
-        error: null,
+        error: false,
       });
     } else {
       throw new Error(GET_CATEGORIES_FAILURE);
     }
   } catch (error) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: error.message,
       categories: [],
-      error: error.message,
+      error: true,
     });
   }
 };
@@ -92,7 +91,7 @@ export const addCategory = async (req, res) => {
         res.status(201).json({
           message: POST_CATEGORIES_SUCCESS,
           category: newCategory,
-          error: null,
+          error: false,
         });
       } else {
         throw new Error(POST_CATEGORY_ERROR);
@@ -102,9 +101,9 @@ export const addCategory = async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: err?.message,
       category: category,
-      error: err?.message,
+      error: true,
     });
   }
 };
@@ -129,16 +128,16 @@ export const updateCategory = async (req, res) => {
       res.status(200).json({
         message: PUT_CATEGORIES_SUCCESS,
         category: updatedCategory,
-        error: null,
+        error: false,
       });
     } else {
       throw new Error(categoryItem.error);
     }
   } catch (err) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: err.message,
       category: category,
-      error: err.message,
+      error: true,
     });
   }
 };
@@ -154,7 +153,7 @@ export const deleteCategory = async (req, res) => {
       await Category.findByIdAndRemove(categoryId);
       res.status(200).json({
         message: DELETE_CATEGORIES_SUCCESS,
-        error: null,
+        error: false,
         category: category,
       });
     } else {
@@ -162,9 +161,9 @@ export const deleteCategory = async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: err.message,
       category: category,
-      error: err.message,
+      error: true,
     });
   }
 };

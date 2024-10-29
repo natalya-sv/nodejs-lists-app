@@ -9,7 +9,6 @@ import {
   POST_SUBCATEGORY_ERROR,
   POST_SUBCATEGORY_TITLE_ERROR,
   PUT_SUBCATEGORIES_SUCCESS,
-  SOMETHING_WENT_WRONG,
   SUBCATEGORIES_NOT_FOUND,
   USER_NOT_FOUND,
 } from "../../constants.js";
@@ -29,7 +28,7 @@ export const getSubcategory = async (req, res) => {
         res.status(200).json({
           message: GET_SUBCATEGORY_SUCCESS,
           subcategory: subcategoryItem.subcategory,
-          error: null,
+          error: false,
         });
       } else {
         throw new Error(subcategoryItem.error);
@@ -39,9 +38,9 @@ export const getSubcategory = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: error.message,
       subcategory: subcategory,
-      error: error?.message,
+      error: true,
     });
   }
 };
@@ -55,13 +54,13 @@ export const getAllSubcategories = async (req, res) => {
     res.status(200).json({
       message: GET_SUBCATEGORIES_SUCCESS,
       subcategories: subcategories,
-      error: null,
+      error: false,
     });
   } catch (error) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: error.message,
       subcategories: [],
-      error: error?.message,
+      error: true,
     });
   }
 };
@@ -78,16 +77,16 @@ export const getSubcategories = async (req, res) => {
       res.status(200).json({
         message: GET_SUBCATEGORIES_SUCCESS,
         subcategories: subcategories,
-        error: null,
+        error: false,
       });
     } else {
       throw new Error(SUBCATEGORIES_NOT_FOUND);
     }
   } catch (error) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: error.message,
       subcategories: [],
-      error: error?.message,
+      error: true,
     });
   }
 };
@@ -120,7 +119,7 @@ export const addSubcategory = async (req, res) => {
             res.status(201).json({
               message: POST_SUBCATEGORIES_SUCCESS,
               subcategory: newSubcategory,
-              error: null,
+              error: false,
             });
           } else {
             throw new Error(POST_SUBCATEGORY_ERROR);
@@ -134,9 +133,9 @@ export const addSubcategory = async (req, res) => {
     }
   } catch (err) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: err.message,
       subcategory: subcategory,
-      error: err.message,
+      error: true,
     });
   }
 };
@@ -160,16 +159,16 @@ export const updateSubcategory = async (req, res) => {
       res.status(200).json({
         message: PUT_SUBCATEGORIES_SUCCESS,
         subcategory: updatedSubcategory,
-        error: null,
+        error: false,
       });
     } else {
       throw new Error(subcategoryItem.error);
     }
   } catch (err) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: err.message,
       subcategory: subcategory,
-      error: err?.message,
+      error: true,
     });
   }
 };
@@ -187,16 +186,16 @@ export const deleteSubcategory = async (req, res) => {
       res.status(200).json({
         message: DELETE_SUBCATEGORIES_SUCCESS,
         subcategory: subcategory,
-        error: null,
+        error: false,
       });
     } else {
       throw new Error(subcategoryItem.error);
     }
   } catch (err) {
     res.status(500).json({
-      message: SOMETHING_WENT_WRONG,
+      message: err.message,
       subcategory: subcategory,
-      error: err?.message,
+      error: true,
     });
   }
 };
