@@ -2,7 +2,13 @@ import dotenv from "dotenv";
 import { EMAIL_EXISTS, ENTER_VALID_EMAIL } from "../../constants.js";
 import { User } from "../models/user.js";
 import express from "express";
-import { createUser, login } from "../../api/controllers/user-controller.js";
+import {
+  createUser,
+  login,
+  resetPasswordRequest,
+  changePassword,
+  resetPassword,
+} from "../../api/controllers/user-controller.js";
 import { body } from "express-validator";
 
 export const router = express.Router();
@@ -25,3 +31,6 @@ router.post("/signup", [
 ]);
 
 router.post("/login", login);
+router.post("/reset-password-request", resetPasswordRequest);
+router.get("/change-password", changePassword);
+router.post("/reset-password", resetPassword);

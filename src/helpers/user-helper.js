@@ -8,7 +8,6 @@ import jsonwebtoken from "jsonwebtoken";
 import { User } from "../models/user.js";
 import dotenv from "dotenv";
 dotenv.config();
-
 const secret = process.env.SECRET_JWT;
 
 export const isAuth = async (req, res, next) => {
