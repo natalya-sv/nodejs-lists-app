@@ -27,7 +27,7 @@ export const SUBCATEGORIES_NOT_FOUND = "Subcategories not found";
 export const POST_SUBCATEGORY_TITLE_ERROR = "Subcategory title already exists!";
 
 export const POST_SUBCATEGORY_ERROR = "Error creating new subcategory";
-export const POST_SUBCATEGORY_NOT_FOUND_ERROR = "Error= category not found";
+export const POST_SUBCATEGORY_NOT_FOUND_ERROR = "Error: category not found";
 
 export const GET_SUBCATEGORY_ITEMS_SUCCESS = "Subcategories items fetched";
 export const POST_SUBCATEGORY_ITEM_SUCCESS = "Subcategory item created";
@@ -37,21 +37,20 @@ export const SUBCATEGORY_ITEM_NOT_FOUND = "Subcategory item not found";
 export const POST_SUBCATEGORY_ITEM_ERROR =
   "Error creating new subcategory item";
 export const POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR =
-  "Error= subcategory not found";
+  "Error: subcategory not found";
 export const POST_SUBCATEGORY_ITEM_TITLE_ERROR =
   "Subcategory item title already exists!";
 
 export const AUTH_NOT_PROVIDED = "No auth header provided";
 export const USER_NOT_AUTH = "Not Authenticated";
 export const ENTER_VALID_INPUT = "Error occured. Check your input";
-export const EMAIL_NOT_RECOGNIZED = "Email is not recognized!";
 
 //email
-
+export const EMAIL_NOT_RECOGNIZED = "Email is not recognized!";
 export const EMAIL_NOT_FOUND = "Email not found";
 export const WELCOME = "Welcome to the Listify App!";
 export const WELCOME_CONTENT =
-  "Welcome to the Listifyƒ App! Open the app, add your goals and start reaching your goals!";
+  "Welcome to the Listify App! Open the app, add your list and start reaching your goals!";
 
 export const PASSWORD_RESET = "Password reset request";
 export const PASSWORD_RESET_TEXT = "You requested password reset.";
