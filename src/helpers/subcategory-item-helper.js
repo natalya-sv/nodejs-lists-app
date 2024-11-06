@@ -1,10 +1,9 @@
 import {
-  ENTER_VALID_INPUT,
   SUBCATEGORY_ITEM_NOT_FOUND,
   NOT_AUTHORIZED,
+  SUBCATEGORIES_ITEMS_LIMIT_ERROR,
 } from "../../constants.js";
 import { SubcategoryItem } from "../models/subcategoryItem.js";
-import { generateFieldValidationErrorMessage } from "../utils.js";
 
 async function createSubcategoryItem(item, userId) {
   const newSubcategoryItem = new SubcategoryItem({
@@ -104,3 +103,13 @@ export async function updateSubcategoryItems(
     }),
   );
 }
+export const countSubcategoryItems = async (userId) => {
+  const numberOfSubCategories = await SubcategoryItem.count({
+    userId: userId,
+  });
+  if (numberOfSubCategories >= 50) {
+    return { error: true, message: SUBCATEGORIES_ITEMS_LIMIT_ERROR };
+  } else {
+    return { error: false, message: "" };
+  }
+};
