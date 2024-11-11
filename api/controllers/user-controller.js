@@ -8,6 +8,7 @@ import {
   EMAIL_NOT_RECOGNIZED,
   EXPIRED_TOKEN,
   PASSWORD_IS_RESET,
+  PASSWORD_IS_RESET_ACTION,
   PASSWORD_IS_RESET_TEXT,
   PASSWORD_RESET,
   PASSWORD_RESET_ACTION,
@@ -134,13 +135,13 @@ export const resetPasswordRequest = async (req, res) => {
       "./src/views/email-request.hbs",
     );
 
-    res.status(200).json({ message: CHECK_EMAIL_TO_RESET });
+    res.status(200).json({ message: CHECK_EMAIL_TO_RESET, error: false });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
     console.log("err", err);
-    res.status(500).json({ error: err?.message });
+    res.status(500).json({ error: true, message: err?.message });
   }
 };
 export const changePassword = async (req, res, next) => {
@@ -176,7 +177,7 @@ export const resetPassword = async (req, res, next) => {
               PASSWORD_IS_RESET,
               {
                 name: user.username,
-                action: PASSWORD_RESET_ACTION,
+                action: PASSWORD_IS_RESET_ACTION,
                 text: PASSWORD_IS_RESET_TEXT,
               },
               "./src/views/email-request-result.hbs",
@@ -190,8 +191,8 @@ export const resetPassword = async (req, res, next) => {
       }
     }
 
-    res.status(200).json({ message: PASSWORD_IS_RESET });
+    res.status(200).json({ error: false, message: PASSWORD_IS_RESET });
   } catch (err) {
-    next(err);
+    res.status(500).json({ error: true, message: err?.message });
   }
 };
