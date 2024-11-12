@@ -1,4 +1,5 @@
 import {
+  CATEGORIES_LIMIT_ERROR,
   GET_CATEGORIES_FAILURE,
   GET_CATEGORY_SUCCESS,
   POST_CATEGORY_ERROR,
@@ -13,7 +14,10 @@ import {
   PUT_CATEGORIES_SUCCESS,
 } from "../../constants.js";
 import { setError } from "../../src/utils.js";
-import { categoryExists } from "../../src/helpers/category-helper.js";
+import {
+  categoryExists,
+  countCategories,
+} from "../../src/helpers/category-helper.js";
 
 export const getTestData = (req, res) => {
   res.status(200).json({ message: "Test message is returned" });
@@ -74,6 +78,10 @@ export const addCategory = async (req, res) => {
 
     setError(errors);
 
+    const count = await countCategories(userId);
+    if (count.error) {
+      throw new Error(count.message);
+    }
     const categoryExists = await Category.findOne({
       title: title,
       userId: userId,

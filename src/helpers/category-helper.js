@@ -1,5 +1,9 @@
 import { Category } from "../models/category.js";
-import { CATEGORY_NOT_FOUND, NOT_AUTHORIZED } from "../../constants.js";
+import {
+  CATEGORIES_LIMIT_ERROR,
+  CATEGORY_NOT_FOUND,
+  NOT_AUTHORIZED,
+} from "../../constants.js";
 
 export const categoryExists = async (categoryId, userId) => {
   const category = await Category.findById(categoryId);
@@ -15,4 +19,12 @@ export const categoryExists = async (categoryId, userId) => {
   categoryItem.category = category;
 
   return categoryItem;
+};
+export const countCategories = async (userId) => {
+  const numberOfCategories = await Category.count({ userId: userId });
+  if (numberOfCategories >= 25) {
+    return { error: true, message: CATEGORIES_LIMIT_ERROR };
+  }
+
+  return { error: false, message: "" };
 };
