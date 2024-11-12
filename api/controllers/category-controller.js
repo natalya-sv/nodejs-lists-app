@@ -18,6 +18,9 @@ import {
   categoryExists,
   countCategories,
 } from "../../src/helpers/category-helper.js";
+import { Subcategory } from "../../src/models/subcategory.js";
+import { SubcategoryItem } from "../../src/models/subcategoryItem.js";
+import { deleteSubcategoriesByCategoryId } from "../../src/helpers/subcategory-helper.js";
 
 export const getTestData = (req, res) => {
   res.status(200).json({ message: "Test message is returned" });
@@ -158,7 +161,17 @@ export const deleteCategory = async (req, res) => {
 
     if (categoryItem.category) {
       category = categoryItem.category;
-      await Category.findByIdAndRemove(categoryId);
+
+      const deletedCategory = await Category.findByIdAndRemove(categoryId);
+      console.log("deletedCategory", deletedCategory);
+
+      const subcategoriesDeleted = await deleteSubcategoriesByCategoryId(
+        categoryId,
+        userId,
+      );
+      if (subcategoriesDeleted.error) {
+        throw new Error(subcategoriesDeleted);
+      }
       res.status(200).json({
         message: DELETE_CATEGORIES_SUCCESS,
         error: false,

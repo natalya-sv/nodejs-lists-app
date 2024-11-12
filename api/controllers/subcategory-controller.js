@@ -18,6 +18,7 @@ import {
   countSubcategories,
   subcategoryExists,
 } from "../../src/helpers/subcategory-helper.js";
+import { SubcategoryItem } from "../../src/models/subcategoryItem.js";
 
 export const getSubcategory = async (req, res) => {
   let subcategory = null;
@@ -192,6 +193,11 @@ export const deleteSubcategory = async (req, res) => {
     if (subcategoryItem.subcategory) {
       subcategory = subcategoryItem.subcategory;
       await Subcategory.findByIdAndRemove(subcategoryId);
+      await SubcategoryItem.deleteMany({
+        subcategoryId: subcategoryId,
+        userId: userId,
+      });
+
       res.status(200).json({
         message: DELETE_SUBCATEGORIES_SUCCESS,
         subcategory: subcategory,
