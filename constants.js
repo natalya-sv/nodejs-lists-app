@@ -16,7 +16,8 @@ export const CATEGORY_NOT_FOUND = "Category not found";
 export const POST_CATEGORY_ERROR = "Error creating new category";
 export const POST_CATEGORY_TITLE_ERROR = "Category title already exists!";
 export const GET_CATEGORIES_FAILURE = "Categories not found";
-
+export const CATEGORIES_LIMIT_ERROR =
+  "You have reached limit for creating categories(max: 25).";
 export const GET_SUBCATEGORIES_SUCCESS = "Subcategories fetched";
 export const GET_SUBCATEGORY_SUCCESS = "Subcategory fetched";
 export const POST_SUBCATEGORIES_SUCCESS = "Subcategory created";
@@ -25,9 +26,10 @@ export const DELETE_SUBCATEGORIES_SUCCESS = "Subcategory deleted";
 export const SUBCATEGORY_NOT_FOUND = "Subcategory not found";
 export const SUBCATEGORIES_NOT_FOUND = "Subcategories not found";
 export const POST_SUBCATEGORY_TITLE_ERROR = "Subcategory title already exists!";
-
 export const POST_SUBCATEGORY_ERROR = "Error creating new subcategory";
 export const POST_SUBCATEGORY_NOT_FOUND_ERROR = "Error: category not found";
+export const SUBATEGORIES_LIMIT_ERROR =
+  "You have reached limit for creating subcategories(max: 30).";
 
 export const GET_SUBCATEGORY_ITEMS_SUCCESS = "Subcategories items fetched";
 export const POST_SUBCATEGORY_ITEM_SUCCESS = "Subcategory item created";
@@ -40,7 +42,32 @@ export const POST_SUBCATEGORY_ITEM_NOT_FOUND_ERROR =
   "Error: subcategory not found";
 export const POST_SUBCATEGORY_ITEM_TITLE_ERROR =
   "Subcategory item title already exists!";
+export const SUBCATEGORIES_ITEMS_LIMIT_ERROR =
+  "You have reached limit for creating list items(max: 50).";
 
 export const AUTH_NOT_PROVIDED = "No auth header provided";
 export const USER_NOT_AUTH = "Not Authenticated";
 export const ENTER_VALID_INPUT = "Error occured. Check your input";
+
+//email
+export const EMAIL_NOT_RECOGNIZED = "Email is not recognized!";
+export const EMAIL_NOT_FOUND = "Email not found";
+export const WELCOME = "Welcome to the Listify App!";
+export const WELCOME_CONTENT =
+  "Welcome to the Listify App! Open the app, add your list and start reaching your goals!";
+
+export const PASSWORD_RESET = "Password reset request";
+export const PASSWORD_RESET_TEXT = "You requested password reset.";
+export const PASSWORD_RESET_ACTION =
+  "Please, click the link below to reset your password";
+
+export const RESET_PASSWORD_LINK_TEXT = "Reset password";
+export const CHECK_EMAIL_TO_RESET = "Check your email to reset password!";
+export const PASSWORDS_NOT_THE_SAME = "Passwords are not the same! Try again";
+export const PASSWORD_IS_RESET = "Password has been reset!";
+export const PASSWORD_IS_RESET_ACTION = "You password has been reset.";
+export const PASSWORD_IS_RESET_TEXT =
+  "Please, use new password to login in the Listify App";
+export const CHECK_EMAIL_FOLLOW_INSTRUCTIONS =
+  "Check your email and follow the instructions!";
+export const EXPIRED_TOKEN = "Invalid or expired password reset token";

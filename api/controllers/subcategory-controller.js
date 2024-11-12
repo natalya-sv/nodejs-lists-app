@@ -9,11 +9,15 @@ import {
   POST_SUBCATEGORY_ERROR,
   POST_SUBCATEGORY_TITLE_ERROR,
   PUT_SUBCATEGORIES_SUCCESS,
+  SUBATEGORIES_LIMIT_ERROR,
   SUBCATEGORIES_NOT_FOUND,
   USER_NOT_FOUND,
 } from "../../constants.js";
 import { Category } from "../../src/models/category.js";
-import { subcategoryExists } from "../../src/helpers/subcategory-helper.js";
+import {
+  countSubcategories,
+  subcategoryExists,
+} from "../../src/helpers/subcategory-helper.js";
 
 export const getSubcategory = async (req, res) => {
   let subcategory = null;
@@ -98,6 +102,11 @@ export const addSubcategory = async (req, res) => {
     setError(errors);
     const userId = req.userId;
     const categoryId = req.params.categoryId;
+
+    const count = await countSubcategories(userId);
+    if (count.error) {
+      throw new Error(count.message);
+    }
 
     if (categoryId) {
       const hasCategory = await Category.findById(categoryId);

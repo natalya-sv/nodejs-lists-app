@@ -10,6 +10,7 @@ import {
   POST_SUBCATEGORY_ITEM_TITLE_ERROR,
   USER_NOT_AUTH,
   SOMETHING_WENT_WRONG,
+  SUBCATEGORIES_ITEMS_LIMIT_ERROR,
 } from "../../constants.js";
 import { SubcategoryItem } from "../../src/models/subcategoryItem.js";
 import { validationResult } from "express-validator";
@@ -18,6 +19,7 @@ import {
   subcategoryItemExists,
   createSubcategoryItems,
   updateSubcategoryItems,
+  countSubcategoryItems,
 } from "../../src/helpers/subcategory-item-helper.js";
 import { setError } from "../../src/utils.js";
 
@@ -81,6 +83,10 @@ export const addSubcategoryItem = async (req, res) => {
     const userId = req.userId;
     const subcategoryId = req.params.subcategoryId;
 
+    const count = await countSubcategoryItems(userId);
+    if (count.error) {
+      throw new Error(count.message);
+    }
     if (subcategoryId) {
       const hasSubCategory = await Subcategory.findById(subcategoryId);
 
@@ -135,7 +141,12 @@ export const addSubcategoryItemMany = async (req, res) => {
 
     const userId = req.userId;
     const subcategoryId = req.params.subcategoryId;
+    const itemsArray = req.body;
 
+    const count = await countSubcategoryItems(userId);
+    if (count.error) {
+      throw new Error(count.message);
+    }
     if (!subcategoryId) throw new Error(POST_SUBCATEGORY_ITEM_ERROR);
 
     const hasSubCategory = await Subcategory.findById(subcategoryId);
@@ -154,8 +165,6 @@ export const addSubcategoryItemMany = async (req, res) => {
       success: [],
       failed: [],
     };
-
-    const itemsArray = req.body;
 
     await createSubcategoryItems(itemsArray, userId, addingItemsResult);
 
