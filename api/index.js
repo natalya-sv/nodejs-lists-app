@@ -6,8 +6,13 @@ import { router as categoriesRouter } from "../src/routes/category-routes.js";
 import { router as subcategoryRouter } from "../src/routes/subcategory-routes.js";
 import { router as subcategoryItemsRouter } from "../src/routes/subcategory-item-routes.js";
 import { router as userRouter } from "../src/routes/user-routes.js";
+import path from "path";
+
+const __dirname = path.resolve();
 
 import cors from "cors";
+import hbs from "express-hbs";
+
 dotenv.config();
 const databaseUrl = process.env.MONGODB_URI;
 const backendUrl = process.env.BACKEND_URL;
@@ -33,6 +38,14 @@ app.use((error, req, res) => {
   console.log("error:", error);
   res.status(status).json({ message: message, data: data });
 });
+app.engine(
+  "hbs",
+  hbs.express4({
+    partialsDir: __dirname + "/src/views",
+  }),
+);
+app.set("view engine", "hbs");
+app.set("views", __dirname + "/src/views");
 
 connect(databaseUrl)
   .then(() => {

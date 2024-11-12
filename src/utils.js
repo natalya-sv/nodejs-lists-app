@@ -1,4 +1,14 @@
 import { ENTER_VALID_INPUT } from "../constants.js";
+import nodemailer from "nodemailer";
+import fs from "fs";
+import path from "path";
+import hbs from "express-hbs";
+import dotenv from "dotenv";
+const __dirname = path.resolve();
+dotenv.config();
+
+const info_email = process.env.INFO_EMAIL;
+const email_psw = process.env.INFO_EMAIL_PSW;
 
 export const generateFieldValidationErrorMessage = (validationError) => {
   let errorMessage = "";
@@ -23,3 +33,32 @@ export function setError(errors) {
     throw new Error(error?.message);
   }
 }
+export const sendEmail = async (email, subject, payload, template) => {
+  try {
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false,
+      auth: {
+        user: info_email,
+        pass: email_psw,
+      },
+    });
+    if (payload && template) {
+      const source = fs.readFileSync(path.join(__dirname, template), "utf8");
+      const compiledTemplate = hbs.compile(source);
+
+      await transporter.sendMail({
+        from: `Listify App ${info_email}`,
+        to: email,
+        subject: subject,
+        html: compiledTemplate(payload),
+      });
+      return true;
+    }
+  } catch (err) {
+    console.log(err, "email not sent");
+    throw new Error(err);
+  }
+};

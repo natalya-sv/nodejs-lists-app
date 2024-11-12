@@ -48,3 +48,26 @@ export const SUBCATEGORIES_ITEMS_LIMIT_ERROR =
 export const AUTH_NOT_PROVIDED = "No auth header provided";
 export const USER_NOT_AUTH = "Not Authenticated";
 export const ENTER_VALID_INPUT = "Error occured. Check your input";
+
+//email
+export const EMAIL_NOT_RECOGNIZED = "Email is not recognized!";
+export const EMAIL_NOT_FOUND = "Email not found";
+export const WELCOME = "Welcome to the Listify App!";
+export const WELCOME_CONTENT =
+  "Welcome to the Listify App! Open the app, add your list and start reaching your goals!";
+
+export const PASSWORD_RESET = "Password reset request";
+export const PASSWORD_RESET_TEXT = "You requested password reset.";
+export const PASSWORD_RESET_ACTION =
+  "Please, click the link below to reset your password";
+
+export const RESET_PASSWORD_LINK_TEXT = "Reset password";
+export const CHECK_EMAIL_TO_RESET = "Check your email to reset password!";
+export const PASSWORDS_NOT_THE_SAME = "Passwords are not the same! Try again";
+export const PASSWORD_IS_RESET = "Password has been reset!";
+export const PASSWORD_IS_RESET_ACTION = "You password has been reset.";
+export const PASSWORD_IS_RESET_TEXT =
+  "Please, use new password to login in the Listify App";
+export const CHECK_EMAIL_FOLLOW_INSTRUCTIONS =
+  "Check your email and follow the instructions!";
+export const EXPIRED_TOKEN = "Invalid or expired password reset token";
