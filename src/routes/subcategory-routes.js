@@ -8,6 +8,7 @@ import {
   getSubcategory,
   updateSubcategory,
   addSubcategory,
+  archiveSubcategories,
 } from "../../api/controllers/subcategory-controller.js";
 
 export const router = express.Router();
@@ -27,6 +28,7 @@ router.post(
   isAuth,
   addSubcategory,
 );
+router.put("/subcategories/acrhive", isAuth, archiveSubcategories);
 router.put(
   "/subcategories/:subcategoryId",
   [body("title").trim().isLength({ min: 3 })],

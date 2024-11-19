@@ -2,6 +2,7 @@ import { Subcategory } from "../../src/models/subcategory.js";
 import { validationResult } from "express-validator";
 import { setError } from "../../src/utils.js";
 import {
+  ARCHIVE_SUBCATEGORIES_SUCCESS,
   DELETE_SUBCATEGORIES_SUCCESS,
   GET_SUBCATEGORIES_SUCCESS,
   GET_SUBCATEGORY_SUCCESS,
@@ -9,7 +10,6 @@ import {
   POST_SUBCATEGORY_ERROR,
   POST_SUBCATEGORY_TITLE_ERROR,
   PUT_SUBCATEGORIES_SUCCESS,
-  SUBATEGORIES_LIMIT_ERROR,
   SUBCATEGORIES_NOT_FOUND,
   USER_NOT_FOUND,
 } from "../../constants.js";
@@ -50,9 +50,12 @@ export const getSubcategory = async (req, res) => {
 };
 export const getAllSubcategories = async (req, res) => {
   try {
+    const { archived } = req.body;
+
     const userId = req.userId;
     const subcategories = await Subcategory.find({
       userId: userId,
+      archived: archived ?? false,
     });
 
     res.status(200).json({
@@ -72,10 +75,13 @@ export const getSubcategories = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
     const userId = req.userId;
+    const { archived } = req.body;
+
     if (categoryId) {
       const subcategories = await Subcategory.find({
         categoryId: categoryId,
         userId: userId,
+        archived: archived ?? false,
       });
 
       res.status(200).json({
@@ -204,6 +210,33 @@ export const deleteSubcategory = async (req, res) => {
     res.status(500).json({
       message: err.message,
       subcategory: subcategory,
+      error: true,
+    });
+  }
+};
+export const archiveSubcategories = async (req, res) => {
+  try {
+    const { subcategoriesIds } = req.body;
+
+    for (let i = 0; i < subcategoriesIds.length; i++) {
+      const subcategoryId = subcategoriesIds[i];
+      const subcategory = await Subcategory.findByIdAndUpdate(subcategoryId, {
+        archived: true,
+      });
+
+      if (!subcategory) {
+        throw new Error("Error archiving subcategory with", subcategory);
+      }
+    }
+    res.status(200).json({
+      message: ARCHIVE_SUBCATEGORIES_SUCCESS,
+      subcategories: subcategoriesIds,
+      error: false,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+      subcategories: [],
       error: true,
     });
   }
