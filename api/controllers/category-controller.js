@@ -1,5 +1,4 @@
 import {
-  CATEGORIES_LIMIT_ERROR,
   GET_CATEGORIES_FAILURE,
   GET_CATEGORY_SUCCESS,
   POST_CATEGORY_ERROR,
@@ -18,8 +17,6 @@ import {
   categoryExists,
   countCategories,
 } from "../../src/helpers/category-helper.js";
-import { Subcategory } from "../../src/models/subcategory.js";
-import { SubcategoryItem } from "../../src/models/subcategoryItem.js";
 import { deleteSubcategoriesByCategoryId } from "../../src/helpers/subcategory-helper.js";
 
 export const getTestData = (req, res) => {
@@ -163,7 +160,6 @@ export const deleteCategory = async (req, res) => {
       category = categoryItem.category;
 
       const deletedCategory = await Category.findByIdAndRemove(categoryId);
-      console.log("deletedCategory", deletedCategory);
 
       const subcategoriesDeleted = await deleteSubcategoriesByCategoryId(
         categoryId,
