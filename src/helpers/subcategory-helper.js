@@ -4,6 +4,8 @@ import {
   SUBATEGORIES_LIMIT_ERROR,
   SUBCATEGORIES_NOT_FOUND,
 } from "../../constants.js";
+import { Category } from "../models/category.js";
+import { SubcategoryItem } from "../models/subcategoryItem.js";
 
 export const subcategoryExists = async (subcategoryId, userId) => {
   const subcategory = await Subcategory.findById(subcategoryId);
@@ -27,4 +29,26 @@ export const countSubcategories = async (userId) => {
     return { error: true, message: SUBATEGORIES_LIMIT_ERROR };
   }
   return { error: false, message: "" };
+};
+export const deleteSubcategoriesByCategoryId = async (categoryId, userId) => {
+  try {
+    const subcategories = await Subcategory.find({
+      categoryId: categoryId,
+      userId: userId,
+    });
+    const subcategoriesIds = subcategories.map(
+      (subcategory) => subcategory._id,
+    );
+    await Subcategory.deleteMany({
+      categoryId: categoryId,
+      userId: userId,
+    });
+    await SubcategoryItem.deleteMany({
+      subcategoryId: { $in: subcategoriesIds },
+      userId: userId,
+    });
+    return { error: false, message: "items deleted" };
+  } catch (err) {
+    return { error: true, message: err?.message ?? err };
+  }
 };
