@@ -24,7 +24,7 @@ router.post("/signup", [
         return Promise.reject(EMAIL_EXISTS);
       }
     })
-    .normalizeEmail(),
+    .normalizeEmail({ gmail_remove_dots: false }),
   body("password").trim().isLength({ min: 7 }),
   body("username").trim().not().isEmpty(),
   createUser,
