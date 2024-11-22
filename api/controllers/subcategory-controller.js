@@ -2,6 +2,7 @@ import { Subcategory } from "../../src/models/subcategory.js";
 import { validationResult } from "express-validator";
 import { setError } from "../../src/utils.js";
 import {
+  ARCHIVE_ERROR_IDS,
   ARCHIVE_SUBCATEGORIES_SUCCESS,
   DELETE_SUBCATEGORIES_SUCCESS,
   GET_SUBCATEGORIES_SUCCESS,
@@ -51,11 +52,10 @@ export const getSubcategory = async (req, res) => {
 export const getAllSubcategories = async (req, res) => {
   try {
     const { archived } = req.body;
-
     const userId = req.userId;
     const subcategories = await Subcategory.find({
       userId: userId,
-      archived: archived ?? false,
+      archived: Boolean(archived),
     });
 
     res.status(200).json({
@@ -127,6 +127,7 @@ export const addSubcategory = async (req, res) => {
             title: title,
             categoryId: categoryId,
             userId: userId,
+            archived: false,
           });
           subcategory = newSubcategory;
           const result = await newSubcategory.save();
@@ -216,8 +217,8 @@ export const deleteSubcategory = async (req, res) => {
 };
 export const archiveSubcategories = async (req, res) => {
   try {
+    const errors = [];
     const { subcategoriesIds } = req.body;
-
     for (let i = 0; i < subcategoriesIds.length; i++) {
       const subcategoryId = subcategoriesIds[i];
       const subcategory = await Subcategory.findByIdAndUpdate(subcategoryId, {
@@ -225,8 +226,15 @@ export const archiveSubcategories = async (req, res) => {
       });
 
       if (!subcategory) {
-        throw new Error("Error archiving subcategory with", subcategory);
+        errors.push(subcategoryId);
       }
+    }
+    if (errors.length > 0) {
+      res.status(200).json({
+        message: ARCHIVE_ERROR_IDS,
+        subcategories: errors,
+        error: true,
+      });
     }
     res.status(200).json({
       message: ARCHIVE_SUBCATEGORIES_SUCCESS,

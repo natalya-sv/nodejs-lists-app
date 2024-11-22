@@ -28,7 +28,7 @@ router.post(
   isAuth,
   addSubcategory,
 );
-router.put("/subcategories/acrhive", isAuth, archiveSubcategories);
+router.put("/subcategories/archive", isAuth, archiveSubcategories);
 router.put(
   "/subcategories/:subcategoryId",
   [body("title").trim().isLength({ min: 3 })],

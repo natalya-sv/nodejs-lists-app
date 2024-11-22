@@ -72,3 +72,4 @@ export const PASSWORD_IS_RESET_TEXT =
 export const CHECK_EMAIL_FOLLOW_INSTRUCTIONS =
   "Check your email and follow the instructions!";
 export const EXPIRED_TOKEN = "Invalid or expired password reset token";
+export const ARCHIVE_ERROR_IDS = "Not all items have been archived";
