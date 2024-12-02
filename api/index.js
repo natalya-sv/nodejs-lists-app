@@ -6,6 +6,7 @@ import { router as categoriesRouter } from "../src/routes/category-routes.js";
 import { router as subcategoryRouter } from "../src/routes/subcategory-routes.js";
 import { router as subcategoryItemsRouter } from "../src/routes/subcategory-item-routes.js";
 import { router as userRouter } from "../src/routes/user-routes.js";
+import { router as testRouter } from "../src/routes/test-data.js";
 import path from "path";
 
 const __dirname = path.resolve();
@@ -14,9 +15,14 @@ import cors from "cors";
 import hbs from "express-hbs";
 
 dotenv.config();
-const databaseUrl = process.env.MONGODB_URI;
 const backendUrl = process.env.BACKEND_URL;
 const app = express();
+
+const isDev = process.env.NODE_ENV === "development";
+
+const databaseUrl = isDev
+  ? process.env.MONGODB_URI_DEV
+  : process.env.MONGODB_URI;
 
 app.use(bodyParser.json());
 app.use(
@@ -31,6 +37,8 @@ app.use(categoriesRouter);
 app.use(userRouter);
 app.use(subcategoryRouter);
 app.use(subcategoryItemsRouter);
+app.use(testRouter);
+
 app.use((error, req, res) => {
   const status = 500;
   const message = error.message;
@@ -49,6 +57,11 @@ app.set("views", __dirname + "/src/views");
 
 connect(databaseUrl)
   .then(() => {
+    if (isDev) {
+      console.log("Development mode response");
+    } else {
+      console.log("Production mode response");
+    }
     app.listen(8080, () => console.log("Server ready on port 8080"));
   })
   .catch((err) => {
