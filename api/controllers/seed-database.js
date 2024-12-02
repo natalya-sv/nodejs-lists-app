@@ -103,7 +103,7 @@ export const seedDatabase = async (req, res) => {
         users: users,
       });
     }
-    res.status(500).json({ message: "method not allowed in producution" });
+    res.status(500).json({ message: "method not allowed in production" });
   } catch (error) {
     res.status(500).json({
       message: error.message,
