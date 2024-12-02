@@ -215,7 +215,7 @@ export const seedDatabase = async (req, res) => {
       });
       return res.status(200).json({ message: "Database seeded", users: users });
     }
-    res.status(500).json({ message: "not allowed in prod" });
+    res.status(500).json({ message: "not allowed in prod." });
   } catch (error) {
     res.status(500).json({
       message: error.message,
