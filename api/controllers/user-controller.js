@@ -190,8 +190,7 @@ export const resetPassword = async (req, res, next) => {
         throw new Error(EXPIRED_TOKEN);
       }
     }
-
-    res.status(200).json({ error: false, message: PASSWORD_IS_RESET });
+    res.render("password-reset", { link: "listify-phi.vercel.app" });
   } catch (err) {
     res.status(500).json({ error: true, message: err?.message });
   }
