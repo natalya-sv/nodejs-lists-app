@@ -30,13 +30,13 @@ app.use(
     origin: [
       "http://localhost:3000",
       backendUrl,
-      /^https:\/\/nodejs-lists-.*\.vercel\.app$/,
+      /^https:\/\/nodejs-lists-*\.vercel\.app$/,
     ],
     credentials: true,
   }),
 );
 app.use((req, res, next) => {
-  const origin = req.headers.origin;
+  const origin = req.headers;
   console.log("origin", origin);
 });
 app.use(express.urlencoded({ extended: false }));
