@@ -61,7 +61,6 @@ export const PASSWORD_RESET = "Password reset request";
 export const PASSWORD_RESET_TEXT = "You requested password reset.";
 export const PASSWORD_RESET_ACTION =
   "Please, click the link below to reset your password";
-
 export const RESET_PASSWORD_LINK_TEXT = "Reset password";
 export const CHECK_EMAIL_TO_RESET = "Check your email to reset password!";
 export const PASSWORDS_NOT_THE_SAME = "Passwords are not the same! Try again";
