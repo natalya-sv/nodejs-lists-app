@@ -30,6 +30,7 @@ export const POST_SUBCATEGORY_ERROR = "Error creating new subcategory";
 export const POST_SUBCATEGORY_NOT_FOUND_ERROR = "Error: category not found";
 export const SUBATEGORIES_LIMIT_ERROR =
   "You have reached limit for creating subcategories(max: 30).";
+export const ARCHIVE_SUBCATEGORIES_SUCCESS = "Subcategory archived";
 
 export const GET_SUBCATEGORY_ITEMS_SUCCESS = "Subcategories items fetched";
 export const POST_SUBCATEGORY_ITEM_SUCCESS = "Subcategory item created";
@@ -60,7 +61,6 @@ export const PASSWORD_RESET = "Password reset request";
 export const PASSWORD_RESET_TEXT = "You requested password reset.";
 export const PASSWORD_RESET_ACTION =
   "Please, click the link below to reset your password";
-
 export const RESET_PASSWORD_LINK_TEXT = "Reset password";
 export const CHECK_EMAIL_TO_RESET = "Check your email to reset password!";
 export const PASSWORDS_NOT_THE_SAME = "Passwords are not the same! Try again";
@@ -71,3 +71,4 @@ export const PASSWORD_IS_RESET_TEXT =
 export const CHECK_EMAIL_FOLLOW_INSTRUCTIONS =
   "Check your email and follow the instructions!";
 export const EXPIRED_TOKEN = "Invalid or expired password reset token";
+export const ARCHIVE_ERROR_IDS = "Not all items have been archived";

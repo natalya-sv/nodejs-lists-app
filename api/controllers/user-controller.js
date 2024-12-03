@@ -23,6 +23,7 @@ import {
 import { Token } from "../../src/models/token.js";
 import crypto from "crypto";
 import { sendEmail } from "../../src/utils.js";
+import { checkPasswordResetRequest } from "../../src/helpers/password-reset-request-helper.js";
 dotenv.config();
 
 const secret = process.env.SECRET_JWT;
@@ -109,38 +110,45 @@ export const resetPasswordRequest = async (req, res) => {
       throw error;
     }
 
-    let token = await Token.findOne({ userId: user._id });
+    const passwordResetRequestLimit = await checkPasswordResetRequest(email);
+    if (passwordResetRequestLimit.error) {
+      return res.status(500).json({
+        error: true,
+        message: passwordResetRequestLimit.message,
+      });
+    } else {
+      let token = await Token.findOne({ userId: user._id });
 
-    if (token) {
-      await token.deleteOne();
+      if (token) {
+        await token.deleteOne();
+      }
+
+      let resetToken = crypto.randomBytes(32).toString("hex");
+      const hash = await bcrypt.hash(resetToken, 12);
+
+      await new Token({ userId: user._id, token: hash }).save();
+
+      const url = `${listifyUrl}/change-password?token=${resetToken}&id=${user._id}`;
+
+      await sendEmail(
+        email,
+        PASSWORD_RESET,
+        {
+          name: user.username,
+          text: PASSWORD_RESET_TEXT,
+          action: PASSWORD_RESET_ACTION,
+          link: url,
+          link_text: RESET_PASSWORD_LINK_TEXT,
+        },
+        "./src/views/email-request.hbs",
+      );
+
+      res.status(200).json({ message: CHECK_EMAIL_TO_RESET, error: false });
     }
-
-    let resetToken = crypto.randomBytes(32).toString("hex");
-    const hash = await bcrypt.hash(resetToken, 12);
-
-    await new Token({ userId: user._id, token: hash }).save();
-
-    const url = `${listifyUrl}/change-password?token=${resetToken}&id=${user._id}`;
-
-    await sendEmail(
-      email,
-      PASSWORD_RESET,
-      {
-        name: user.username,
-        text: PASSWORD_RESET_TEXT,
-        action: PASSWORD_RESET_ACTION,
-        link: url,
-        link_text: RESET_PASSWORD_LINK_TEXT,
-      },
-      "./src/views/email-request.hbs",
-    );
-
-    res.status(200).json({ message: CHECK_EMAIL_TO_RESET, error: false });
   } catch (err) {
     if (!err.statusCode) {
       err.statusCode = 500;
     }
-    console.log("err", err);
     res.status(500).json({ error: true, message: err?.message });
   }
 };
@@ -152,7 +160,7 @@ export const changePassword = async (req, res, next) => {
     next(err);
   }
 };
-export const resetPassword = async (req, res, next) => {
+export const resetPassword = async (req, res) => {
   try {
     const { password, confirm_password, token, userId } = req.body;
 
