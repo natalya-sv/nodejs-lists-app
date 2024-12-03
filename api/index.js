@@ -35,7 +35,10 @@ app.use(
     credentials: true,
   }),
 );
-
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  console.log("origin", origin);
+});
 app.use(express.urlencoded({ extended: false }));
 app.use(categoriesRouter);
 app.use(userRouter);
