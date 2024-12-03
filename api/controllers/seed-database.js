@@ -99,7 +99,7 @@ export const seedDatabase = async (req, res) => {
       });
       return res.status(200).json({
         message:
-          "Database seeded. Use one of these users to login and view data",
+          "Database seeded. Use one of these users to login and view data.",
         users: users,
       });
     }

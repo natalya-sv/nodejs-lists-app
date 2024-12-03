@@ -27,7 +27,11 @@ const databaseUrl = isDev
 app.use(bodyParser.json());
 app.use(
   cors({
-    origin: ["http://localhost:3000", backendUrl],
+    origin: [
+      "http://localhost:3000",
+      backendUrl,
+      /^https:\/\/nodejs-lists-.*\.vercel\.app$/,
+    ],
     credentials: true,
   }),
 );
