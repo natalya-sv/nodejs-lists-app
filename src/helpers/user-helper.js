@@ -29,6 +29,6 @@ export const isAuth = async (req, res, next) => {
     req.userId = decodedToken.userId;
     next();
   } catch (err) {
-    res.status(500).json({ message: SOMETHING_WENT_WRONG, error: err.message });
+    res.status(401).json({ message: SOMETHING_WENT_WRONG, error: err.message });
   }
 };
