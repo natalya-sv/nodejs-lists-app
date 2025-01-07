@@ -22,7 +22,7 @@ export const categoryExists = async (categoryId, userId) => {
 };
 export const countCategories = async (userId) => {
   const numberOfCategories = await Category.count({ userId: userId });
-  if (numberOfCategories >= 25) {
+  if (numberOfCategories >= 50) {
     return { error: true, message: CATEGORIES_LIMIT_ERROR };
   }
 

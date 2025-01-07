@@ -103,9 +103,10 @@ export async function updateSubcategoryItems(
     }),
   );
 }
-export const countSubcategoryItems = async (userId) => {
+export const countSubcategoryItems = async (userId, subcategoryId) => {
   const numberOfSubCategories = await SubcategoryItem.count({
     userId: userId,
+    subcategoryId: subcategoryId,
   });
   if (numberOfSubCategories >= 50) {
     return { error: true, message: SUBCATEGORIES_ITEMS_LIMIT_ERROR };

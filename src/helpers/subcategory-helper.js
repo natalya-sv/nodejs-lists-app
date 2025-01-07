@@ -23,9 +23,12 @@ export const subcategoryExists = async (subcategoryId, userId) => {
   subcategoryItem.subcategory = subcategory;
   return subcategoryItem;
 };
-export const countSubcategories = async (userId) => {
-  const numberOfSubCategories = await Subcategory.count({ userId: userId });
-  if (numberOfSubCategories >= 30) {
+export const countSubcategories = async (userId, categoryId) => {
+  const numberOfSubCategories = await Subcategory.count({
+    userId: userId,
+    categoryId: categoryId,
+  });
+  if (numberOfSubCategories >= 50) {
     return { error: true, message: SUBATEGORIES_LIMIT_ERROR };
   }
   return { error: false, message: "" };
