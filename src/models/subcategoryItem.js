@@ -21,6 +21,10 @@ const subcategoryItemSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "User",
   },
+  index: {
+    type: Number,
+    required: true,
+  },
 });
 
 export const SubcategoryItem = model("SubcategoryItem", subcategoryItemSchema);
