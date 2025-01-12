@@ -12,6 +12,7 @@ async function createSubcategoryItem(item, userId) {
     subcategoryId: item.subcategoryId,
     userId: userId,
     isDone: item.isDone ?? false,
+    index: item.index,
   });
 
   const result = await newSubcategoryItem.save();
@@ -90,6 +91,8 @@ export async function updateSubcategoryItems(
           item.description ?? subcategoryItem.subcategoryItem.description;
         subcategoryItem.subcategoryItem.isDone =
           item.isDone ?? subcategoryItem.subcategoryItem.isDone;
+        subcategoryItem.subcategoryItem.index =
+          item.index ?? subcategoryItem.subcategoryItem.index;
 
         const updatedSubcategoryItem =
           await subcategoryItem.subcategoryItem.save();
@@ -103,9 +106,10 @@ export async function updateSubcategoryItems(
     }),
   );
 }
-export const countSubcategoryItems = async (userId) => {
+export const countSubcategoryItems = async (userId, subcategoryId) => {
   const numberOfSubCategories = await SubcategoryItem.count({
     userId: userId,
+    subcategoryId: subcategoryId,
   });
   if (numberOfSubCategories >= 50) {
     return { error: true, message: SUBCATEGORIES_ITEMS_LIMIT_ERROR };

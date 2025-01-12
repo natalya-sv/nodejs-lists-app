@@ -10,7 +10,6 @@ import {
   POST_SUBCATEGORY_ITEM_TITLE_ERROR,
   USER_NOT_AUTH,
   SOMETHING_WENT_WRONG,
-  SUBCATEGORIES_ITEMS_LIMIT_ERROR,
 } from "../../constants.js";
 import { SubcategoryItem } from "../../src/models/subcategoryItem.js";
 import { validationResult } from "express-validator";
@@ -77,13 +76,13 @@ export const getAllSubcategoryItems = async (req, res) => {
 export const addSubcategoryItem = async (req, res) => {
   let subcategoryItem = null;
   try {
-    const { title, description, isDone } = req.body;
+    const { title, description, isDone, index } = req.body;
     const errors = validationResult(req);
     setError(errors);
     const userId = req.userId;
     const subcategoryId = req.params.subcategoryId;
 
-    const count = await countSubcategoryItems(userId);
+    const count = await countSubcategoryItems(userId, subcategoryId);
     if (count.error) {
       throw new Error(count.message);
     }
@@ -104,7 +103,9 @@ export const addSubcategoryItem = async (req, res) => {
             subcategoryId: subcategoryId,
             userId: userId,
             isDone: isDone ?? false,
+            index: index,
           });
+          
           subcategoryItem = newSubcategoryItem;
           const result = await newSubcategoryItem.save();
           if (result) {
@@ -143,7 +144,7 @@ export const addSubcategoryItemMany = async (req, res) => {
     const subcategoryId = req.params.subcategoryId;
     const itemsArray = req.body;
 
-    const count = await countSubcategoryItems(userId);
+    const count = await countSubcategoryItems(userId, subcategoryId);
     if (count.error) {
       throw new Error(count.message);
     }
@@ -195,7 +196,7 @@ export const updateSubcategoryItem = async (req, res) => {
   let subcategoryItemR = null;
   try {
     const subcategoryItemId = req.params.subcategoryItemId;
-    const { title, description, isDone } = req.body;
+    const { title, description, isDone, index } = req.body;
     const errors = validationResult(req);
     setError(errors);
     const userId = req.userId;
@@ -213,6 +214,8 @@ export const updateSubcategoryItem = async (req, res) => {
           description ?? subcategoryItem.subcategoryItem.description;
         subcategoryItem.subcategoryItem.isDone =
           isDone ?? subcategoryItem.subcategoryItem.isDone;
+        subcategoryItem.subcategoryItem.index =
+          index ?? subcategoryItem.subcategoryItem.index;
 
         subcategoryItemR = subcategoryItem.subcategoryItem;
         const updatedSubcategoryItem =
