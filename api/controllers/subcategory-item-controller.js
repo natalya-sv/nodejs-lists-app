@@ -82,7 +82,7 @@ export const addSubcategoryItem = async (req, res) => {
     const userId = req.userId;
     const subcategoryId = req.params.subcategoryId;
 
-    const count = await countSubcategoryItems(userId);
+    const count = await countSubcategoryItems(userId, subcategoryId);
     if (count.error) {
       throw new Error(count.message);
     }
@@ -144,7 +144,7 @@ export const addSubcategoryItemMany = async (req, res) => {
     const subcategoryId = req.params.subcategoryId;
     const itemsArray = req.body;
 
-    const count = await countSubcategoryItems(userId);
+    const count = await countSubcategoryItems(userId, subcategoryId);
     if (count.error) {
       throw new Error(count.message);
     }
