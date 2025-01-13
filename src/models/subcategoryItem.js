@@ -23,7 +23,6 @@ const subcategoryItemSchema = new Schema({
   },
   index: {
     type: Number,
-    required: true,
   },
 });
 
