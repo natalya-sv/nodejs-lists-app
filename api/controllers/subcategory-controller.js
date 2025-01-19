@@ -76,8 +76,7 @@ export const getSubcategories = async (req, res) => {
   try {
     const categoryId = req.params.categoryId;
     const userId = req.userId;
-    const { archived } = req.body;
-
+    const { archived } = req.query;
     if (categoryId) {
       const subcategories = await Subcategory.find({
         categoryId: categoryId,
