@@ -52,7 +52,7 @@ export const getSubcategory = async (req, res) => {
 };
 export const getAllSubcategories = async (req, res) => {
   try {
-    const { archived } = req.body;
+    const { archived } = req.query;
     const userId = req.userId;
     const subcategories = await Subcategory.find({
       userId: userId,
