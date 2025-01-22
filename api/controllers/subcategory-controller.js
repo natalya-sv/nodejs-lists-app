@@ -12,6 +12,8 @@ import {
   POST_SUBCATEGORY_TITLE_ERROR,
   PUT_SUBCATEGORIES_SUCCESS,
   SUBCATEGORIES_NOT_FOUND,
+  UNARCHIVE,
+  UNARCHIVE_SUBCATEGORIES_SUCCESS,
   USER_NOT_FOUND,
 } from "../../constants.js";
 import { Category } from "../../src/models/category.js";
@@ -223,11 +225,11 @@ export const deleteSubcategory = async (req, res) => {
 export const archiveSubcategories = async (req, res) => {
   try {
     const errors = [];
-    const { subcategoriesIds } = req.body;
+    const { subcategoriesIds, action } = req.body;
     for (let i = 0; i < subcategoriesIds.length; i++) {
       const subcategoryId = subcategoriesIds[i];
       const subcategory = await Subcategory.findByIdAndUpdate(subcategoryId, {
-        archived: true,
+        archived: action === UNARCHIVE ? false : true,
       });
 
       if (!subcategory) {
@@ -242,7 +244,10 @@ export const archiveSubcategories = async (req, res) => {
       });
     }
     res.status(200).json({
-      message: ARCHIVE_SUBCATEGORIES_SUCCESS,
+      message:
+        action === UNARCHIVE
+          ? UNARCHIVE_SUBCATEGORIES_SUCCESS
+          : ARCHIVE_SUBCATEGORIES_SUCCESS,
       subcategories: subcategoriesIds,
       error: false,
     });
