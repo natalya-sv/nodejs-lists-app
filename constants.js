@@ -31,7 +31,8 @@ export const POST_SUBCATEGORY_NOT_FOUND_ERROR = "Error: category not found";
 export const SUBATEGORIES_LIMIT_ERROR =
   "You have reached limit for creating subcategories(max: 30).";
 export const ARCHIVE_SUBCATEGORIES_SUCCESS = "Subcategory archived";
-
+export const UNARCHIVE_SUBCATEGORIES_SUCCESS = "Subcategory unarchived";
+export const UNARCHIVE = "unarchive";
 export const GET_SUBCATEGORY_ITEMS_SUCCESS = "Subcategories items fetched";
 export const POST_SUBCATEGORY_ITEM_SUCCESS = "Subcategory item created";
 export const PUT_SUBCATEGORY_ITEM_SUCCESS = "Subcategory item updated";
