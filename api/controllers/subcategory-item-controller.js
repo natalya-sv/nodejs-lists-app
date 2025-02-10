@@ -105,7 +105,7 @@ export const addSubcategoryItem = async (req, res) => {
             isDone: isDone ?? false,
             index: index,
           });
-          
+
           subcategoryItem = newSubcategoryItem;
           const result = await newSubcategoryItem.save();
           if (result) {
@@ -217,14 +217,24 @@ export const updateSubcategoryItem = async (req, res) => {
         subcategoryItem.subcategoryItem.index =
           index ?? subcategoryItem.subcategoryItem.index;
 
+        if (subcategoryItem.subcategoryItem.isDone && !isDone) {
+          subcategoryItem.subcategoryItem.completedAt = null;
+        }
+        if (isDone) {
+          subcategoryItem.subcategoryItem.completedAt = new Date();
+        }
+
         subcategoryItemR = subcategoryItem.subcategoryItem;
+
         const updatedSubcategoryItem =
           await subcategoryItem.subcategoryItem.save();
+
         res.status(200).json({
           message: PUT_SUBCATEGORY_ITEM_SUCCESS,
           subcategoryItem: updatedSubcategoryItem,
           error: false,
         });
+        //check badges
       } else {
         throw new Error(subcategoryItem.error);
       }
