@@ -4,15 +4,15 @@ import { isAuth } from "../helpers/user-helper.js";
 import { body } from "express-validator";
 import {
   addBadge,
+  getAllBadges,
   getBadge,
-  getBadges,
-  getUserBadges,
+  getUserGainedBadges,
   unlockBadge,
 } from "../../api/controllers/badge-controller.js";
 
 export const router = express.Router();
 
-router.get("/badges", isAuth, getBadges);
+router.get("/badges", isAuth, getAllBadges);
 router.get("/badges/:badgeId", isAuth, getBadge);
 router.post(
   "/badges",
@@ -25,4 +25,4 @@ router.post(
   addBadge,
 );
 router.post("/unlock-badge", isAuth, unlockBadge);
-router.get("/user-badges/:userId", isAuth, getUserBadges);
+router.get("/user-badges", isAuth, getUserGainedBadges);

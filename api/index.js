@@ -8,7 +8,7 @@ import { router as subcategoryItemsRouter } from "../src/routes/subcategory-item
 import { router as userRouter } from "../src/routes/user-routes.js";
 import { router as testRouter } from "../src/routes/test-data.js";
 import path from "path";
-
+import { router as badgeRouter } from "../src/routes/badge-routes.js";
 const __dirname = path.resolve();
 
 import cors from "cors";
@@ -42,7 +42,7 @@ app.use(userRouter);
 app.use(subcategoryRouter);
 app.use(subcategoryItemsRouter);
 app.use(testRouter);
-
+app.use(badgeRouter);
 app.use((error, req, res) => {
   const status = 500;
   const message = error.message;

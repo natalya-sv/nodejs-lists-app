@@ -14,6 +14,9 @@ const badgeSchema = new Schema(
       type: String,
       required: true,
     },
+    badgeType: {
+      badgeType: String,
+    },
     criteria: { type: String, required: true },
   },
   { timestamps: true },

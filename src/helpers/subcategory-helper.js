@@ -24,7 +24,7 @@ export const subcategoryExists = async (subcategoryId, userId) => {
   return subcategoryItem;
 };
 export const countSubcategories = async (userId, categoryId) => {
-  const numberOfSubCategories = await Subcategory.count({
+  const numberOfSubCategories = await Subcategory.countDocuments({
     userId: userId,
     categoryId: categoryId,
   });

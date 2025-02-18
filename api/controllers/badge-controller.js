@@ -1,13 +1,12 @@
 import { validationResult } from "express-validator";
-import { badgeExists } from "../../src/helpers/badge-helper";
-import { Badge } from "../../src/models/badge";
+import { badgeExists } from "../../src/helpers/badge-helper.js";
+import { Badge } from "../../src/models/badge.js";
 import { setError } from "../../src/utils.js";
-import { UserBadge } from "../models/UserBadge";
+import { UserBadge } from "../../src/models/userBadge.js";
 
-export const getBadges = async (req, res) => {
+export const getAllBadges = async (req, res) => {
   try {
-    const userId = req?.userId;
-    const badges = await Badge.find({ userId: userId });
+    const badges = await Badge.find();
 
     if (badges) {
       res.status(200).json({
@@ -17,6 +16,27 @@ export const getBadges = async (req, res) => {
       });
     } else {
       throw new Error("");
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+      badges: [],
+      error: true,
+    });
+  }
+};
+export const getUserGainedBadges = async (req, res) => {
+  try {
+    const userId = req?.userId;
+    const badges = await UserBadge.find({ userId: userId });
+    if (badges) {
+      res.status(200).json({
+        message: "",
+        badges: badges,
+        error: false,
+      });
+    } else {
+      throw new Error("Error fetching user badges");
     }
   } catch (error) {
     res.status(500).json({
@@ -53,7 +73,7 @@ export const getBadge = async (req, res) => {
 export const addBadge = async (req, res) => {
   let badge = null;
   try {
-    const { name, icon, description, criteria } = req.body;
+    const { name, icon, description, criteria, badgeType } = req.body;
     const errors = validationResult(req);
 
     setError(errors);
@@ -67,12 +87,13 @@ export const addBadge = async (req, res) => {
         description: description,
         icon: icon,
         criteria: criteria,
+        badgeType: badgeType,
       });
       const result = await newBadge.save();
       if (result) {
         badge = newBadge;
         res.status(201).json({
-          message: "",
+          message: "Badge has been created",
           badge: newBadge,
           error: false,
         });
@@ -80,7 +101,7 @@ export const addBadge = async (req, res) => {
         throw new Error("");
       }
     } else {
-      throw new Error("");
+      throw new Error("Badge already exists");
     }
   } catch (err) {
     res.status(500).json({
@@ -91,9 +112,9 @@ export const addBadge = async (req, res) => {
   }
 };
 
-export const unlockBadge = async (userId, badgeName) => {
+export const unlockBadge = async (userId, badgeId) => {
   try {
-    const badge = await Badge.findOne({ name: badgeName });
+    const badge = await Badge.findById(badgeId);
 
     if (!badge) {
       throw new Error("Badge not found");
@@ -107,26 +128,13 @@ export const unlockBadge = async (userId, badgeName) => {
 
     if (existingBadge) {
       console.log("User already has this badge");
-      return;
+      return null;
     }
 
     const newBadge = new UserBadge({ userId, badgeId: badge._id });
+    console.log("User badge saved", badge.name);
     await newBadge.save();
   } catch (error) {
     console.error("Error unlocking badge:", error);
-  }
-};
-export const getUserBadges = async (req, res) => {
-  const { userId } = req.params;
-
-  try {
-    const userBadges = await UserBadge.find({ userId }).populate("badgeId");
-    res.status(200).json({ userBadges: userBadges, error: false, message: "" });
-  } catch (error) {
-    res.status(500).json({
-      message: "Failed to fetch user badges" + error,
-      userBadges: [],
-      error: true,
-    });
   }
 };

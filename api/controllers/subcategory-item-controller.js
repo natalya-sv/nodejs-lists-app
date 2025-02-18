@@ -21,7 +21,7 @@ import {
   countSubcategoryItems,
 } from "../../src/helpers/subcategory-item-helper.js";
 import { setError } from "../../src/utils.js";
-
+import { checkSubcategoryItemsBadges } from "../../src/helpers/badge-helper.js";
 export const getSubcategoryItemsBySubcategoryId = async (req, res) => {
   try {
     const subcategoryId = req.params.subcategoryId;
@@ -109,6 +109,7 @@ export const addSubcategoryItem = async (req, res) => {
           subcategoryItem = newSubcategoryItem;
           const result = await newSubcategoryItem.save();
           if (result) {
+            await checkSubcategoryItemsBadges(userId);
             res.status(201).json({
               message: POST_SUBCATEGORY_ITEM_SUCCESS,
               subcategoryItem: newSubcategoryItem,
@@ -170,11 +171,13 @@ export const addSubcategoryItemMany = async (req, res) => {
     await createSubcategoryItems(itemsArray, userId, addingItemsResult);
 
     if (addingItemsResult.success.length === itemsArray.length) {
+      await checkSubcategoryItemsBadges(userId);
       res.status(201).json({
         message: POST_SUBCATEGORY_ITEM_SUCCESS,
         subcategoryItems: addingItemsResult.success,
         error: false,
       });
+      // handleSubcategoriesCompletion(userId)
     } else {
       res.status(500).json({
         message: "Some items were not added",
@@ -223,18 +226,38 @@ export const updateSubcategoryItem = async (req, res) => {
         if (isDone) {
           subcategoryItem.subcategoryItem.completedAt = new Date();
         }
+        //set subcategory completedAt if all items are done
 
         subcategoryItemR = subcategoryItem.subcategoryItem;
-
+        const subcategoryId = subcategoryItem.subcategoryItem.subcategoryId;
         const updatedSubcategoryItem =
           await subcategoryItem.subcategoryItem.save();
 
+        if (subcategoryId) {
+          const subItems = await SubcategoryItem.find({
+            userId: userId,
+            subcategoryId: subcategoryId,
+          });
+          const allDone = subItems.every((item) => item.isDone);
+
+          if (allDone) {
+            const subcat = await Subcategory.findOne({
+              userId: userId,
+              _id: subcategoryId,
+            });
+
+            if (subcat) {
+              subcat.completedAt = new Date();
+              await subcat.save();
+              await checkSubcategoryItemsBadges(userId);
+            }
+          }
+        }
         res.status(200).json({
           message: PUT_SUBCATEGORY_ITEM_SUCCESS,
           subcategoryItem: updatedSubcategoryItem,
           error: false,
         });
-        //check badges
       } else {
         throw new Error(subcategoryItem.error);
       }
@@ -287,6 +310,7 @@ export const updateSubcategoryItemMany = async (req, res) => {
         subcategoryItems: addingItemsResult.success,
         error: false,
       });
+      // handleSubcategoriesCompletion
     } else {
       res.status(500).json({
         message: "Some items were not updated",
