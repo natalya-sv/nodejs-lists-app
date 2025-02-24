@@ -111,7 +111,40 @@ export const addBadge = async (req, res) => {
     });
   }
 };
+export const updateBadge = async (req, res) => {
+  let badge = null;
+  try {
+    const { name, icon, description, criteria, badgeType } = req.body;
+    // const errors = validationResult(req);
+    // setError(errors);
+    const badgeId = req.params.badgeId;
 
+    const badgeItem = await Badge.findById(badgeId);
+    if (badgeItem) {
+      badgeItem.name = name ?? badgeItem.name;
+      badgeItem.criteria = criteria ?? badgeItem.criteria;
+      badgeItem.icon = icon ?? badgeItem.icon;
+      // badgeItem.badgeType = badgeType ?? badgeItem.badgeType;
+      badgeItem.description = description ?? badgeItem.description;
+      badge = badgeItem;
+
+      const updatedBadge = await badgeItem.save();
+      res.status(200).json({
+        message: "Badge updated",
+        badge: updatedBadge,
+        error: false,
+      });
+    } else {
+      throw new Error(badgeItem);
+    }
+  } catch (err) {
+    res.status(500).json({
+      message: err.message,
+      badge: badge,
+      error: true,
+    });
+  }
+};
 export const unlockBadge = async (userId, badgeId) => {
   try {
     const badge = await Badge.findById(badgeId);

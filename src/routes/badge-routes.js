@@ -8,6 +8,7 @@ import {
   getBadge,
   getUserGainedBadges,
   unlockBadge,
+  updateBadge,
 } from "../../api/controllers/badge-controller.js";
 
 export const router = express.Router();
@@ -24,5 +25,6 @@ router.post(
   isAuth,
   addBadge,
 );
+router.put("/badges/:badgeId", isAuth, updateBadge);
 router.post("/unlock-badge", isAuth, unlockBadge);
 router.get("/user-badges", isAuth, getUserGainedBadges);

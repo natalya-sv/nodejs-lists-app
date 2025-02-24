@@ -29,13 +29,16 @@ export const checkCategoriesBadges = async (userId) => {
 
     const allBadges = await Badge.find({ badgeType: "category" });
 
-    const categoryMaker = allBadges.find(
-      (badge) => badge.name === "Category Maker",
+    const categoryRookie = allBadges.find(
+      (badge) => badge.name === "Category Rookie",
+    );
+    const categoryProfie = allBadges.find(
+      (badge) => badge.name === "Category Proffie",
     );
 
     console.log("starting category badges check");
     // Start checking if a user already has a badge
-    if (!userBadges.includes(categoryMaker._id)) {
+    if (!userBadges.includes(categoryRookie._id)) {
       const userCategories = await Category.countDocuments({
         userId: userId,
       });
@@ -43,12 +46,24 @@ export const checkCategoriesBadges = async (userId) => {
 
       if (userCategories >= 3) {
         console.log("You got the Category Maker badge");
-        // Category Maker – Created your first 3 categories
-        await unlockBadge(userId, categoryMaker._id);
+        // Category Rookie – Created your first 3 categories
+        await unlockBadge(userId, categoryRookie._id);
+      }
+    }
+    if (!userBadges.includes(categoryProfie._id)) {
+      const userCategories = await Category.countDocuments({
+        userId: userId,
+      });
+      console.log("result categoryProfie", userCategories);
+
+      if (userCategories >= 3) {
+        console.log("You got the Category Profie badge");
+        // Category Profie – Created 50 categories
+        await unlockBadge(userId, categoryProfie._id);
       }
     }
 
-    console.log("finished badges check");
+    console.log("finished category badges check");
   } catch (err) {
     console.log("err", err);
   }
@@ -222,7 +237,7 @@ export const checkSubcategoryItemsBadges = async (userId) => {
       }
     }
 
-    // // "Multitasker" – Complete tasks from 3 different lists in one day.
+    // "Multitasker" – Complete tasks from 3 different lists in one day.
 
     if (!userBadges.includes(perfectWeek._id)) {
       // Get the start and end of the current week (Sunday to Saturday)
