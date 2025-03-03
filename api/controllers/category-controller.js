@@ -135,6 +135,7 @@ export const updateCategory = async (req, res) => {
       category = categoryItem.category;
 
       const updatedCategory = await categoryItem.category.save();
+      await checkCategoriesBadges(userId);
       res.status(200).json({
         message: PUT_CATEGORIES_SUCCESS,
         category: updatedCategory,
@@ -173,7 +174,7 @@ export const deleteCategory = async (req, res) => {
       res.status(200).json({
         message: DELETE_CATEGORIES_SUCCESS,
         error: false,
-        category: category,
+        category: deletedCategory,
       });
     } else {
       throw new Error(categoryItem.error);

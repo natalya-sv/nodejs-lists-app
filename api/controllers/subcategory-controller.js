@@ -22,10 +22,7 @@ import {
   subcategoryExists,
 } from "../../src/helpers/subcategory-helper.js";
 import { SubcategoryItem } from "../../src/models/subcategoryItem.js";
-import {
-  checkSubCategoriesBadges,
-  checkSubcategoryItemsBadges,
-} from "../../src/helpers/badge-helper.js";
+import { checkSubCategoriesBadges } from "../../src/helpers/badge-helper.js";
 
 export const getSubcategory = async (req, res) => {
   let subcategory = null;

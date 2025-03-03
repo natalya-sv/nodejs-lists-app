@@ -305,12 +305,12 @@ export const updateSubcategoryItemMany = async (req, res) => {
     await updateSubcategoryItems(itemsArray, userId, addingItemsResult);
 
     if (addingItemsResult.success.length === itemsArray.length) {
+      await checkSubcategoryItemsBadges(userId);
       res.status(201).json({
         message: PUT_SUBCATEGORY_ITEM_SUCCESS,
         subcategoryItems: addingItemsResult.success,
         error: false,
       });
-      // handleSubcategoriesCompletion
     } else {
       res.status(500).json({
         message: "Some items were not updated",

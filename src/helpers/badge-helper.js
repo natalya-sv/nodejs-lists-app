@@ -38,7 +38,7 @@ export const checkCategoriesBadges = async (userId) => {
 
     console.log("starting category badges check");
     // Start checking if a user already has a badge
-    if (!userBadges.includes(categoryRookie._id)) {
+    if (categoryRookie?._id && !userBadges.includes(categoryRookie._id)) {
       const userCategories = await Category.countDocuments({
         userId: userId,
       });
@@ -50,7 +50,7 @@ export const checkCategoriesBadges = async (userId) => {
         await unlockBadge(userId, categoryRookie._id);
       }
     }
-    if (!userBadges.includes(categoryProfie._id)) {
+    if (categoryProfie?._id && !userBadges.includes(categoryProfie._id)) {
       const userCategories = await Category.countDocuments({
         userId: userId,
       });
@@ -82,7 +82,7 @@ export const checkSubCategoriesBadges = async (userId) => {
 
     console.log("starting subcategory badges check");
     // Start checking if a user  already has  a badge
-    if (!userBadges.includes(zeroInbox._id)) {
+    if (zeroInbox?._id && !userBadges.includes(zeroInbox._id)) {
       const subcategories = await Subcategory.find({
         userId: userId,
         completedAt: { $ne: null },
@@ -95,7 +95,7 @@ export const checkSubCategoriesBadges = async (userId) => {
       }
     }
 
-    if (!userBadges.includes(listMaker?._id)) {
+    if (listMaker?._id && !userBadges.includes(listMaker._id)) {
       const userSubcategories = await Subcategory.count({ userId: userId });
       console.log("result userSubcategories:", userSubcategories);
       if (userSubcategories >= 10) {
@@ -138,7 +138,7 @@ export const checkSubcategoryItemsBadges = async (userId) => {
 
     console.log("starting  badges check", userId);
     // Start checking if a user  already has  a badge
-    if (!userBadges.includes(taskRookie._id)) {
+    if (taskRookie?._id && !userBadges.includes(taskRookie._id)) {
       const userSubcategoriyItems = await SubcategoryItem.countDocuments({
         userId: userId,
         isDone: true,
@@ -151,7 +151,7 @@ export const checkSubcategoryItemsBadges = async (userId) => {
         await unlockBadge(userId, taskRookie._id);
       }
     }
-    if (!userBadges.includes(taskMaster._id)) {
+    if (taskMaster?._id && !userBadges.includes(taskMaster._id)) {
       const userSubcategoriyItems = await SubcategoryItem.countDocuments({
         userId: userId,
         isDone: true,
@@ -165,7 +165,7 @@ export const checkSubcategoryItemsBadges = async (userId) => {
       }
     }
 
-    if (!userBadges.includes(earlyBird._id)) {
+    if (earlyBird?._id && !userBadges.includes(earlyBird._id)) {
       const subcategoryItems = await SubcategoryItem.find({
         userId: userId,
         completedAt: { $ne: null },
@@ -181,7 +181,7 @@ export const checkSubcategoryItemsBadges = async (userId) => {
         // "Early Bird" – Complete a task before 8 AM.
       }
     }
-    if (!userBadges.includes(nightOwl._id)) {
+    if (nightOwl?.id && !userBadges.includes(nightOwl._id)) {
       const subcategoryItems = await SubcategoryItem.find({
         userId: userId,
         completedAt: { $ne: null },
@@ -199,7 +199,7 @@ export const checkSubcategoryItemsBadges = async (userId) => {
       }
     }
 
-    if (!userBadges.includes(lightningFast._id)) {
+    if (lightningFast?.id && !userBadges.includes(lightningFast._id)) {
       const completedWithinFiveMin = await SubcategoryItem.findOne({
         userId: userId,
         $expr: {
@@ -214,7 +214,7 @@ export const checkSubcategoryItemsBadges = async (userId) => {
         await unlockBadge(userId, lightningFast._id);
       }
     }
-    if (!userBadges.includes(weekendWarrior._id)) {
+    if (weekendWarrior?._id && !userBadges.includes(weekendWarrior._id)) {
       const itemsCompletedDuringWeekend = await SubcategoryItem.aggregate([
         {
           $match: { userId: userId },
@@ -239,7 +239,7 @@ export const checkSubcategoryItemsBadges = async (userId) => {
 
     // "Multitasker" – Complete tasks from 3 different lists in one day.
 
-    if (!userBadges.includes(perfectWeek._id)) {
+    if (perfectWeek?.id && !userBadges.includes(perfectWeek._id)) {
       // Get the start and end of the current week (Sunday to Saturday)
       const startOfWeek = new Date();
       startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Set to Sunday
@@ -280,7 +280,7 @@ export const checkSubcategoryItemsBadges = async (userId) => {
       }
     }
 
-    if (!userBadges.includes(masterPlanner._id)) {
+    if (masterPlanner?.id && userBadges.includes(masterPlanner._id)) {
       const startOfWeek = new Date();
       startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay()); // Set to Sunday
       startOfWeek.setHours(0, 0, 0, 0);
@@ -318,7 +318,7 @@ export const checkSubcategoryItemsBadges = async (userId) => {
       }
     }
 
-    if (!userBadges.includes(unstoppable._id)) {
+    if (unstoppable?.id && !userBadges.includes(unstoppable._id)) {
       const startOf30DaysAgo = new Date();
       startOf30DaysAgo.setDate(startOf30DaysAgo.getDate() - 30); // 30 days ago
       startOf30DaysAgo.setHours(0, 0, 0, 0);
