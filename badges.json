@@ -92,10 +92,17 @@
     "badgeType": "subcategory-item"
   },
   {
-    "name": "Category Maker",
+    "name": "Category Rookie",
     "description": "Create your first 3 categories",
     "icon": "icon",
-    "criteria": "User created its 3 categories.",
+    "criteria": "User created 3 categories.",
+    "badgeType": "category"
+  },
+  {
+    "name": "Category Proffie",
+    "description": "Create 50 categories",
+    "icon": "icon",
+    "criteria": "User created  categories.",
     "badgeType": "category"
   }
 ]

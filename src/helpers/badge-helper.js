@@ -56,7 +56,7 @@ export const checkCategoriesBadges = async (userId) => {
       });
       console.log("result categoryProfie", userCategories);
 
-      if (userCategories >= 3) {
+      if (userCategories >= 50) {
         console.log("You got the Category Profie badge");
         // Category Profie – Created 50 categories
         await unlockBadge(userId, categoryProfie._id);

@@ -3,6 +3,14 @@ import { badgeExists } from "../../src/helpers/badge-helper.js";
 import { Badge } from "../../src/models/badge.js";
 import { setError } from "../../src/utils.js";
 import { UserBadge } from "../../src/models/userBadge.js";
+import {
+  BADGES_NOT_FOUND,
+  GET_BADGE_SUCCESS,
+  GET_BADGES_SUCCESS,
+  GET_USER_BADGES_SUCCESS,
+  POST_BADGES_SUCCESS,
+  PUT_BADGES_SUCCESS,
+} from "../../constants.js";
 
 export const getAllBadges = async (req, res) => {
   try {
@@ -10,7 +18,7 @@ export const getAllBadges = async (req, res) => {
 
     if (badges) {
       res.status(200).json({
-        message: "",
+        message: GET_BADGES_SUCCESS,
         badges: badges,
         error: false,
       });
@@ -31,7 +39,7 @@ export const getUserGainedBadges = async (req, res) => {
     const badges = await UserBadge.find({ userId: userId });
     if (badges) {
       res.status(200).json({
-        message: "",
+        message: GET_USER_BADGES_SUCCESS,
         badges: badges,
         error: false,
       });
@@ -55,7 +63,7 @@ export const getBadge = async (req, res) => {
 
     if (badgeItem.category) {
       res.status(200).json({
-        message: "",
+        message: GET_BADGE_SUCCESS,
         badges: badgeItem.badge,
         error: false,
       });
@@ -93,7 +101,7 @@ export const addBadge = async (req, res) => {
       if (result) {
         badge = newBadge;
         res.status(201).json({
-          message: "Badge has been created",
+          message: POST_BADGES_SUCCESS,
           badge: newBadge,
           error: false,
         });
@@ -130,7 +138,7 @@ export const updateBadge = async (req, res) => {
 
       const updatedBadge = await badgeItem.save();
       res.status(200).json({
-        message: "Badge updated",
+        message: PUT_BADGES_SUCCESS,
         badge: updatedBadge,
         error: false,
       });
@@ -150,7 +158,7 @@ export const unlockBadge = async (userId, badgeId) => {
     const badge = await Badge.findById(badgeId);
 
     if (!badge) {
-      throw new Error("Badge not found");
+      throw new Error(BADGES_NOT_FOUND);
     }
 
     // Check if the user already has the badge

@@ -73,3 +73,15 @@ export const CHECK_EMAIL_FOLLOW_INSTRUCTIONS =
   "Check your email and follow the instructions!";
 export const EXPIRED_TOKEN = "Invalid or expired password reset token";
 export const ARCHIVE_ERROR_IDS = "Not all items have been archived";
+
+export const GET_BADGES_SUCCESS = "Badges fetched";
+export const GET_USER_BADGES_SUCCESS = "User Badges fetched";
+export const GET_BADGE_SUCCESS = "Badges fetched";
+export const POST_BADGES_SUCCESS = "Badges created";
+export const PUT_BADGES_SUCCESS = "Badge updated";
+export const DELETE_BADGES_SUCCESS = "Badge deleted";
+export const BADGES_NOT_FOUND = "Badge not found";
+export const POST_BADGES_ERROR = "Error creating new Badge";
+export const POST_BADGES_TITLE_ERROR = "Badge title already exists!";
+export const GET_BADGES_FAILURE = "Badges not found";
+export const USER_HAS_BADGE_ERROR = "User already has this badge";

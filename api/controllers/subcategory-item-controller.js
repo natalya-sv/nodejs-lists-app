@@ -177,7 +177,6 @@ export const addSubcategoryItemMany = async (req, res) => {
         subcategoryItems: addingItemsResult.success,
         error: false,
       });
-      // handleSubcategoriesCompletion(userId)
     } else {
       res.status(500).json({
         message: "Some items were not added",
