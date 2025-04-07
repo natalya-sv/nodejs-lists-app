@@ -27,8 +27,8 @@ export const checkCategoriesBadges = async (userId) => {
     const badges = await UserBadge.find({ userId: userId });
     const userBadges = badges.map((userBadge) => userBadge.badgeId);
 
-    const allBadges = await Badge.find({ badgeType: "category" });
-
+    const allBadges = await Badge.find();
+    console.log("allBadges", allBadges.length);
     const categoryRookie = allBadges.find(
       (badge) => badge.name === "Category Rookie",
     );

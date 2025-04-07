@@ -97,7 +97,7 @@ export const subcategoryItemsThree = [
     description: "description",
   },
 ];
-const badges = [
+export const badges = [
   {
     name: "Task Rookie",
     description: "Complete your first task",
@@ -134,7 +134,6 @@ const badges = [
     badgeType: "subcategory-item",
   },
   {
-    _id: "67ab1ff39fd9ca755230bed2",
     name: "Night Owl",
     description: "Complete a task after 11 PM.",
     icon: "icon",
