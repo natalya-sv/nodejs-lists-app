@@ -1,3 +1,4 @@
+/* eslint-env jest */
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import { User } from "../models/user.js";
@@ -7,7 +8,7 @@ import { badges } from "../../test-data.js";
 import app from "../../api/index.js";
 import request from "supertest";
 import { Category } from "../models/category.js";
-import { body } from "express-validator";
+import { expect, test, beforeAll, afterAll } from "@jest/globals";
 
 let mongo;
 let testUser;
@@ -15,8 +16,6 @@ let token = "";
 const password = "password";
 const isDev = process.env.NODE_ENV === "development";
 process.env.MONGODB_URI = "mongodb://localhost:27017/test-db";
-
-// jest.setTimeout(10000);
 
 beforeAll(async () => {
   if (mongoose.connection.readyState === 1) {
