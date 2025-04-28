@@ -8,7 +8,7 @@ import { router as subcategoryItemsRouter } from "../src/routes/subcategory-item
 import { router as userRouter } from "../src/routes/user-routes.js";
 import { router as testRouter } from "../src/routes/test-data.js";
 import path from "path";
-
+import { router as badgeRouter } from "../src/routes/badge-routes.js";
 const __dirname = path.resolve();
 
 import cors from "cors";
@@ -42,7 +42,7 @@ app.use(userRouter);
 app.use(subcategoryRouter);
 app.use(subcategoryItemsRouter);
 app.use(testRouter);
-
+app.use(badgeRouter);
 app.use((error, req, res) => {
   const status = 500;
   const message = error.message;
@@ -59,16 +59,16 @@ app.engine(
 app.set("view engine", "hbs");
 app.set("views", __dirname + "/src/views");
 
-connect(databaseUrl)
-  .then(() => {
-    if (isDev) {
-      console.log("Development mode response");
-    } else {
-      console.log("Production mode response");
-    }
-    app.listen(8080, () => console.log("Server ready on port 8080"));
-  })
-  .catch((err) => {
-    console.log("error database connection", err);
-  });
+// connect(databaseUrl)
+//   .then(() => {
+//     if (isDev) {
+//       console.log("Development mode response");
+//     } else {
+//       console.log("Production mode response");
+//     }
+//     app.listen(8080, () => console.log("Server ready on port 8080"));
+//   })
+//   .catch((err) => {
+//     console.log("error database connection", err);
+//   });
 export default app;

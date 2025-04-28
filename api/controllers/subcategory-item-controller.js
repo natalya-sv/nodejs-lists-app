@@ -21,7 +21,7 @@ import {
   countSubcategoryItems,
 } from "../../src/helpers/subcategory-item-helper.js";
 import { setError } from "../../src/utils.js";
-
+import { checkSubcategoryItemsBadges } from "../../src/helpers/badge-helper.js";
 export const getSubcategoryItemsBySubcategoryId = async (req, res) => {
   try {
     const subcategoryId = req.params.subcategoryId;
@@ -105,10 +105,11 @@ export const addSubcategoryItem = async (req, res) => {
             isDone: isDone ?? false,
             index: index,
           });
-          
+
           subcategoryItem = newSubcategoryItem;
           const result = await newSubcategoryItem.save();
           if (result) {
+            await checkSubcategoryItemsBadges(userId);
             res.status(201).json({
               message: POST_SUBCATEGORY_ITEM_SUCCESS,
               subcategoryItem: newSubcategoryItem,
@@ -170,6 +171,7 @@ export const addSubcategoryItemMany = async (req, res) => {
     await createSubcategoryItems(itemsArray, userId, addingItemsResult);
 
     if (addingItemsResult.success.length === itemsArray.length) {
+      await checkSubcategoryItemsBadges(userId);
       res.status(201).json({
         message: POST_SUBCATEGORY_ITEM_SUCCESS,
         subcategoryItems: addingItemsResult.success,
@@ -217,9 +219,39 @@ export const updateSubcategoryItem = async (req, res) => {
         subcategoryItem.subcategoryItem.index =
           index ?? subcategoryItem.subcategoryItem.index;
 
+        if (subcategoryItem.subcategoryItem.isDone && !isDone) {
+          subcategoryItem.subcategoryItem.completedAt = null;
+        }
+        if (isDone) {
+          subcategoryItem.subcategoryItem.completedAt = new Date();
+        }
+        //set subcategory completedAt if all items are done
+
         subcategoryItemR = subcategoryItem.subcategoryItem;
+        const subcategoryId = subcategoryItem.subcategoryItem.subcategoryId;
         const updatedSubcategoryItem =
           await subcategoryItem.subcategoryItem.save();
+
+        if (subcategoryId) {
+          const subItems = await SubcategoryItem.find({
+            userId: userId,
+            subcategoryId: subcategoryId,
+          });
+          const allDone = subItems.every((item) => item.isDone);
+
+          if (allDone) {
+            const subcat = await Subcategory.findOne({
+              userId: userId,
+              _id: subcategoryId,
+            });
+
+            if (subcat) {
+              subcat.completedAt = new Date();
+              await subcat.save();
+              await checkSubcategoryItemsBadges(userId);
+            }
+          }
+        }
         res.status(200).json({
           message: PUT_SUBCATEGORY_ITEM_SUCCESS,
           subcategoryItem: updatedSubcategoryItem,
@@ -272,6 +304,7 @@ export const updateSubcategoryItemMany = async (req, res) => {
     await updateSubcategoryItems(itemsArray, userId, addingItemsResult);
 
     if (addingItemsResult.success.length === itemsArray.length) {
+      await checkSubcategoryItemsBadges(userId);
       res.status(201).json({
         message: PUT_SUBCATEGORY_ITEM_SUCCESS,
         subcategoryItems: addingItemsResult.success,

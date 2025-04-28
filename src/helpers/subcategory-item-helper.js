@@ -107,7 +107,7 @@ export async function updateSubcategoryItems(
   );
 }
 export const countSubcategoryItems = async (userId, subcategoryId) => {
-  const numberOfSubCategories = await SubcategoryItem.count({
+  const numberOfSubCategories = await SubcategoryItem.countDocuments({
     userId: userId,
     subcategoryId: subcategoryId,
   });

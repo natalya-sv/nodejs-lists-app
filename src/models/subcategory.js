@@ -17,6 +17,8 @@ const subCategorySchema = new Schema(
       type: Boolean,
       default: false,
     },
+
+    completedAt: { type: Date, default: null },
   },
   { timestamps: true },
 );

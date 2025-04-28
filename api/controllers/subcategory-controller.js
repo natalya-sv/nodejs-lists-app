@@ -22,6 +22,7 @@ import {
   subcategoryExists,
 } from "../../src/helpers/subcategory-helper.js";
 import { SubcategoryItem } from "../../src/models/subcategoryItem.js";
+import { checkSubCategoriesBadges } from "../../src/helpers/badge-helper.js";
 
 export const getSubcategory = async (req, res) => {
   let subcategory = null;
@@ -104,6 +105,7 @@ export const getSubcategories = async (req, res) => {
 };
 export const addSubcategory = async (req, res) => {
   let subcategory = null;
+
   try {
     const { title } = req.body;
     const errors = validationResult(req);
@@ -134,6 +136,7 @@ export const addSubcategory = async (req, res) => {
           subcategory = newSubcategory;
           const result = await newSubcategory.save();
           if (result) {
+            await checkSubCategoriesBadges(userId);
             res.status(201).json({
               message: POST_SUBCATEGORIES_SUCCESS,
               subcategory: newSubcategory,
@@ -174,6 +177,8 @@ export const updateSubcategory = async (req, res) => {
         title ?? subcategoryItem.subcategory.title;
       subcategory = subcategoryItem.subcategory;
       const updatedSubcategory = await subcategoryItem.subcategory.save();
+      await checkSubCategoriesBadges(userId);
+
       res.status(200).json({
         message: PUT_SUBCATEGORIES_SUCCESS,
         subcategory: updatedSubcategory,
