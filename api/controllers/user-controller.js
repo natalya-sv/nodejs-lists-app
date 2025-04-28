@@ -83,7 +83,7 @@ export const login = async (req, res) => {
             userId: loadedUser._id.toString(),
           },
           secret,
-          { expiresIn: "10 days" },
+          { expiresIn: "120 days" },
         );
 
         res.status(200).json({
